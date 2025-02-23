@@ -8,7 +8,7 @@ interface CourseProps {
     convener_seats: string;
     fee: string;
     minority: string;
-    instistute_code: string;
+    institute_code: string;
     District: string;
 }
 
@@ -19,10 +19,9 @@ interface GetCoursesByInstituteData {
 interface InstituteCodeProps {
     InstituteCode: string;
     setCurrentCourse: React.Dispatch<React.SetStateAction<CurrentCourseProps[]>>;
-    currentCourse: CurrentCourseProps[];
 }
 
-const Course = ({ InstituteCode, setCurrentCourse, currentCourse }: InstituteCodeProps) => {
+const Course = ({ InstituteCode, setCurrentCourse }: InstituteCodeProps) => {
     const { data, loading, error } = useQuery<GetCoursesByInstituteData>(GET_COURSES_BY_INSTITUTE, {
         variables: { institute_code: InstituteCode },
     });

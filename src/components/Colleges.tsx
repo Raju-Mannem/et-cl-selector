@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import Course from "./Course"; 
 
 export interface CurrentCourseProps {
-    instistute_code: string;
+    institute_code: string;
     branch_code: string;
     convener_seats: string;
     fee: string;
@@ -88,7 +88,7 @@ const Colleges = () => {
                             currentCourse.map((selectedCrs, crCnt = 0) => (
                                 <tr key={crCnt} className="hover:bg-stone-50 hover:text-blue-500 h-4">
                                     <td className="border border-gray-300 p-2 text-center">{crCnt + 1}</td>
-                                    <td className="border border-gray-300 p-2 text-center">{selectedCrs.instistute_code}</td>
+                                    <td className="border border-gray-300 p-2 text-center">{selectedCrs.institute_code}</td>
                                     <td className="border border-gray-300 p-2 text-center">{selectedCrs.branch_code}</td>
                                     <td className="border border-gray-300 p-2 text-center">{selectedCrs.convener_seats}</td>
                                     <td className="border border-gray-300 p-2 text-center">{selectedCrs.fee}</td>
@@ -166,7 +166,6 @@ const Colleges = () => {
                             <Course
                                 InstituteCode={currentInstituteCode}
                                 setCurrentCourse={setCurrentCourse}
-                                currentCourse={currentCourse}
                             />
                         </div>
                     </aside>
