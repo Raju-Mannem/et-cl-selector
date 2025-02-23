@@ -2,20 +2,30 @@ import { GET_COURSES_BY_INSTITUTE } from "@/graphql/queries";
 import { useQuery } from "@apollo/client";
 
 interface InstituteCodeProps {
-  InstituteCode: String;
-  setCurrentCourse: any;
-  currentCourse:any
+  InstituteCode: string;
+  setCurrentCourse: React.Dispatch<React.SetStateAction<CurrentCourseProps[]>>; // Typing this function
+  currentCourse: CurrentCourseProps[]; // Typing the array of courses
+}
+
+interface CurrentCourseProps {
+  instistute_code: string;
+  branch_code: string;
+  convener_seats: string;
+  fee: string;
+  District: string;
+  minority: string;
 }
 
 const Course = ({ InstituteCode, setCurrentCourse }: InstituteCodeProps) => {
   const { data, loading, error } = useQuery(GET_COURSES_BY_INSTITUTE, {
     variables: { institute_code: InstituteCode },
   });
-  let cnt = 1;
-  function handleSelectedCourse(currentCourse:any){
-    setCurrentCourse((prevSelectedCourses:any) => [...prevSelectedCourses, currentCourse]);
-    alert("courses was added");
+
+  function handleSelectedCourse(currentCourse: CurrentCourseProps) {
+    setCurrentCourse((prevSelectedCourses) => [...prevSelectedCourses, currentCourse]);
+    alert("Course was added");
   }
+
   if (loading)
     return (
       <section className="h-screen w-full bg-gray-100 flex justify-center items-center text-blue-500">
@@ -35,9 +45,10 @@ const Course = ({ InstituteCode, setCurrentCourse }: InstituteCodeProps) => {
             />
           </svg>
         </span>
-        <strong className="text-2xl font-sans"> Loading............</strong>
+        <strong className="text-2xl font-sans">Loading............</strong>
       </section>
     );
+
   if (error)
     return (
       <section className="w-full h-full text-red-200 flex justify-center items-center text-red-500">
@@ -47,86 +58,65 @@ const Course = ({ InstituteCode, setCurrentCourse }: InstituteCodeProps) => {
             error.graphQLErrors.map(({ message }, i) => (
               <span key={i}>{message}</span>
             ))}
-          {JSON.stringify(error)}
-          course error
         </pre>
       </section>
     );
+
   return (
     <section className="flex justify-center items-center flex-col overflow-x-auto py-8 sm:py-12 sm:px-8">
-        <strong className="mb-4 text-red-500">Institute code: {InstituteCode}</strong>
+      <strong className="mb-4 text-red-500">Institute code: {InstituteCode}</strong>
       <table className="min-w-full table-auto bg-white border border-collapse text-[4px] sm:text-[10px] font-sans">
         <thead className="bg-emerald-700 text-neutral-100 font-extrabold">
           <tr>
             <th className="border border-gray-300 text-center p-2">Select</th>
-            <th className="border border-gray-300 text-center p-2">
-                S.NO
-            </th>
-            <th className="border border-gray-300 text-center p-2">
-              branch_code
-            </th>
-            <th className="border border-gray-300 text-center p-2">
-              convener_seats
-            </th>
-            <th className="border border-gray-300 text-center p-2">fee</th>
-            <th className="border border-gray-300 text-center p-2">
-              District minority
-            </th>
+            <th className="border border-gray-300 text-center p-2">S.NO</th>
+            <th className="border border-gray-300 text-center p-2">Branch Code</th>
+            <th className="border border-gray-300 text-center p-2">Convener Seats</th>
+            <th className="border border-gray-300 text-center p-2">Fee</th>
+            <th className="border border-gray-300 text-center p-2">District Minority</th>
           </tr>
         </thead>
         <tbody className="text-neutral-900">
-          {data &&
-          data.getCoursesByInstitute &&
-          Array.isArray(data.getCoursesByInstitute) ? (
-            data.getCoursesByInstitute.map((crs: any) => (
-              <tr
-                key={cnt}
-                className="hover:bg-stone-50 hover:text-blue-500 h-4"
-              >
+          {data && data.getCoursesByInstitute && Array.isArray(data.getCoursesByInstitute) ? (
+            data.getCoursesByInstitute.map((crs: CurrentCourseProps) => (
+              <tr key={crs.branch_code} className="hover:bg-stone-50 hover:text-blue-500 h-4">
                 <td className="border border-gray-300 text-red-500 flex justify-center items-center py-2">
-                <button className="h-full w-full flex justify-center" onClick={()=>handleSelectedCourse(Object.values(crs))}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2.5}
-                    stroke="currentColor"
-                    className="size-1 sm:size-3"
+                  <button
+                    className="h-full w-full flex justify-center"
+                    onClick={() => handleSelectedCourse(crs)}
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 4.5v15m7.5-7.5h-15"
-                    />
-                  </svg>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2.5}
+                      stroke="currentColor"
+                      className="size-1 sm:size-3"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 4.5v15m7.5-7.5h-15"
+                      />
+                    </svg>
                   </button>
                 </td>
-                <td className="border border-gray-300 py-2 text-center">
-                  {cnt++}
-                </td>
-                <td className="border border-gray-300 p-2 text-center">
-                  {crs.branch_code}
-                </td>
-                <td className="border border-gray-300 p-2 text-center">
-                  {crs.convener_seats}
-                </td>
-                <td className="border border-gray-300 p-2 text-center">
-                  {crs.fee}
-                </td>
-                <td className="border border-gray-300 p-2 text-center">
-                  {crs.minority}
-                </td>
+                <td className="border border-gray-300 py-2 text-center">{crs.branch_code}</td>
+                <td className="border border-gray-300 p-2 text-center">{crs.branch_code}</td>
+                <td className="border border-gray-300 p-2 text-center">{crs.convener_seats}</td>
+                <td className="border border-gray-300 p-2 text-center">{crs.fee}</td>
+                <td className="border border-gray-300 p-2 text-center">{crs.minority}</td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan={10}>No Courses found</td>
+              <td colSpan={6}>No courses found</td>
             </tr>
           )}
         </tbody>
       </table>
-      <span></span>
     </section>
   );
 };
+
 export default Course;

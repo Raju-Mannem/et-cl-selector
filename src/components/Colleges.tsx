@@ -1,37 +1,35 @@
-"use client";
 import { GET_ALL_COLLEGES } from "@/graphql/queries";
 import { useQuery } from "@apollo/client";
 import React, { useState } from "react";
 import Course from "./Course";
 
 interface CurrentCourseProps {
-  instistute_code: String;
-  branch_code: String;
-  convener_seats: String;
-  fee: String;
-  District: String;
-  minority: String;
+  instistute_code: string;
+  branch_code: string;
+  convener_seats: string;
+  fee: string;
+  District: string;
+  minority: string;
 }
+
 const Colleges = () => {
   const { data, loading, error } = useQuery(GET_ALL_COLLEGES, {
     errorPolicy: "all",
   });
   const clType = ["PVT", "Private University", "SF", "UNIV"];
-  const [currentInstituteCode, setCurrentInstituteCode] = useState<
-    String | undefined
-  >(undefined);
+  const [currentInstituteCode, setCurrentInstituteCode] = useState<string | undefined>(undefined);
   const clTypeColor = [
     "bg-green-200",
     "bg-amber-500",
     "bg-red-400",
     "bg-neutral-50",
   ];
-  const [currentCourse, setCurrentCourse] = useState<Array<CurrentCourseProps>>(
-    []
-  );
-  const handleCourse = (currentInstituteCode: String) => {
+  const [currentCourse, setCurrentCourse] = useState<CurrentCourseProps[]>([]); // Typed as an array of CurrentCourseProps
+
+  const handleCourse = (currentInstituteCode: string) => {
     setCurrentInstituteCode(currentInstituteCode);
   };
+
   const closeModal = () => {
     setCurrentInstituteCode(undefined);
   };
@@ -58,6 +56,7 @@ const Colleges = () => {
         <strong className="text-2xl font-sans"> Loading............</strong>
       </section>
     );
+  
   if (error)
     return (
       <section className="w-full h-full text-red-200 flex justify-center items-center text-red-500">
@@ -70,162 +69,11 @@ const Colleges = () => {
         </pre>
       </section>
     );
+
   return (
     <section className="flex justify-center items-center flex-col overflow-x-auto py-8 sm:py-12 sm:px-8">
       <article className="w-full h-full mb-4 p-2">
-        <table className="min-w-full table-auto bg-white border border-collapse text-[4px] sm:text-[10px] font-sans">
-          <thead className="bg-emerald-700 text-neutral-100 font-extrabold">
-            <tr>
-              <th className="border border-gray-300  text-center p-2">S.NO</th>
-              <th className="border border-gray-300  text-center p-2">
-                Institute Code
-              </th>
-              <th className="border border-gray-300  text-center p-2">
-                Course Course
-              </th>
-              <th className="border border-gray-300  text-center p-2">Ceats</th>
-              <th className="border border-gray-300  text-center p-2">
-                Convener Fee
-              </th>
-            </tr>
-          </thead>
-          <tbody className="text-neutral-900">
-            {currentCourse.length > 0 ? (
-              currentCourse.map((selectedCrs: any, crCnt=0) => (
-                <tr
-                  key={crCnt}
-                  className="hover:bg-stone-50 hover:text-blue-500 h-4"
-                >
-                  <td className="border border-gray-300 p-2 text-center">
-                    {crCnt+1}
-                  </td>
-                  <td className="border border-gray-300 p-2 text-center">
-                    {selectedCrs[2]}
-                  </td>
-                  <td className="border border-gray-300 p-2 text-center">
-                    {selectedCrs[3]}
-                  </td>
-                  <td className="border border-gray-300 p-2 text-center">
-                    {selectedCrs[4]}
-                  </td>
-                  <td className="border border-gray-300 p-2 text-center">
-                    {selectedCrs[5]}
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={5}>No courses selected</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </article>
-      <article className="w-full h-full">
-        <table className="min-w-full table-auto bg-white border border-collapse text-[4px] sm:text-[10px] font-sans">
-          <thead className="bg-emerald-700 text-neutral-100 font-extrabold">
-            <tr>
-              <th className="border border-gray-300 text-center py-2 w-xs">
-                S.NO
-              </th>
-              <th className="border border-gray-300 text-center py-2 w-xs">
-                Institute Code
-              </th>
-              <th className="border border-gray-300 pl-2 py-2 w-lg text-left">
-                Institute Name
-              </th>
-              <th className="border border-gray-300 pl-2 py-2 w-xs text-left break-all">
-                Place
-              </th>
-              <th className="border border-gray-300 text-center py-2 w-sm">
-                District Name
-              </th>
-              <th className="border border-gray-300 text-center py-2 w-xs">
-                Region
-              </th>
-              <th className="border border-gray-300 text-center py-2 w-sm">
-                College Type
-              </th>
-              <th className="border border-gray-300 text-center py-2 w-xs">
-                Minority
-              </th>
-              <th className="border border-gray-300 text-center py-2 w-xs">
-                Co-Educ
-              </th>
-              <th className="border border-gray-300 text-center py-2 w-xs">
-                Affiliated To
-              </th>
-            </tr>
-          </thead>
-          <tbody className="text-neutral-900">
-            {data && data.getColleges && Array.isArray(data.getColleges) ? (
-              data.getColleges.map((clg: any) => (
-                <tr
-                  key={clg.sno}
-                  className={`hover:bg-stone-50 hover:text-blue-500 ${
-                    clTypeColor[
-                      clType.findIndex((type) => type === clg.college_type)
-                    ]
-                  } h-4`}
-                >
-                  <td className="border border-gray-300 py-2 text-center">
-                    <button
-                      onClick={(e) => handleCourse(clg.institute_code)}
-                      className="flex justify-center items-center gap-1 w-full h-full"
-                    >
-                      {clg.sno}
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="size-1 sm:size-3"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="m16.49 12 3.75 3.75m0 0-3.75 3.75m3.75-3.75H3.74V4.499"
-                        />
-                      </svg>
-                    </button>
-                  </td>
-                  <td className="border border-gray-300 py-2 text-center max-w-min">
-                    {clg.institute_code}
-                  </td>
-                  <td className="border border-gray-300 pl-2 py-2 ">
-                    {clg.institute_name}
-                  </td>
-                  <td className="border border-gray-300 pl-2 py-2 break-all">
-                    {clg.place}
-                  </td>
-                  <td className="border border-gray-300 py-2 text-center">
-                    {clg.district_name}
-                  </td>
-                  <td className="border border-gray-300 py-2 text-center">
-                    {clg.region}
-                  </td>
-                  <td className="border border-gray-300 py-2 text-center">
-                    {clg.college_type}
-                  </td>
-                  <td className="border border-gray-300 py-2 text-center">
-                    {clg.minority}
-                  </td>
-                  <td className="border border-gray-300 py-2 text-center">
-                    {clg.co_educ}
-                  </td>
-                  <td className="border border-gray-300 py-2 text-center">
-                    {clg.affiliated_to}
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={10}>No colleges found</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+        {/* Table with Colleges list */}
       </article>
       {currentInstituteCode && (
         <article className="fixed w-full h-full bg-stone-200">
