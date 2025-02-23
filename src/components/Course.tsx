@@ -37,17 +37,17 @@ const Course = ({ InstituteCode, setCurrentCourse }: InstituteCodeProps) => {
     alert("Course was added");
   };
 
-  if (loading) {
+  if (loading)
     return (
       <section className="h-screen w-full bg-gray-100 flex justify-center items-center text-blue-500">
-        <span className="animate-spin">
+        <span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
-            strokeWidth={1.5}
+            strokeWidth="1.5"
             stroke="currentColor"
-            className="size-6"
+            className="size-6 w-16 h-16 animate-spin"
           >
             <path
               strokeLinecap="round"
@@ -59,22 +59,21 @@ const Course = ({ InstituteCode, setCurrentCourse }: InstituteCodeProps) => {
         <strong className="text-2xl font-sans"> Loading............</strong>
       </section>
     );
-  }
-
-  if (error) {
+  if (error)
     return (
       <section className="w-full h-full text-red-200 flex justify-center items-center text-red-500">
         <pre>
           Try again later:{" "}
-          {error.graphQLErrors?.map(({ message }, i) => (
-            <span key={i}>{message}</span>
-          ))}
-          {JSON.stringify(error)} course error
+          {error &&
+            error.graphQLErrors.map(({ message }, i) => (
+              <span key={i}>{message}</span>
+            ))}
+          {JSON.stringify(error)}
+          course error
         </pre>
       </section>
     );
-  }
-
+    
   return (
     <section className="flex justify-center items-center flex-col overflow-x-auto py-8 sm:py-12 sm:px-8">
       <strong className="mb-4 text-red-500">
