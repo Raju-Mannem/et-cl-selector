@@ -3,8 +3,8 @@ import { useQuery } from "@apollo/client";
 
 interface InstituteCodeProps {
   InstituteCode: string;
-  setCurrentCourse: React.Dispatch<React.SetStateAction<CurrentCourseProps[]>>; // Typing this function
-  currentCourse: CurrentCourseProps[]; // Typing the array of courses
+  setCurrentCourse: React.Dispatch<React.SetStateAction<CurrentCourseProps[]>>;
+  currentCourse: CurrentCourseProps[];
 }
 
 interface CurrentCourseProps {

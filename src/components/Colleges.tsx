@@ -1,3 +1,4 @@
+"use client";
 import { GET_ALL_COLLEGES } from "@/graphql/queries";
 import { useQuery } from "@apollo/client";
 import React, { useState } from "react";
@@ -24,7 +25,7 @@ const Colleges = () => {
     "bg-red-400",
     "bg-neutral-50",
   ];
-  const [currentCourse, setCurrentCourse] = useState<CurrentCourseProps[]>([]); // Typed as an array of CurrentCourseProps
+  const [currentCourse, setCurrentCourse] = useState<CurrentCourseProps[]>([]);
 
   const handleCourse = (currentInstituteCode: string) => {
     setCurrentInstituteCode(currentInstituteCode);
@@ -73,7 +74,6 @@ const Colleges = () => {
   return (
     <section className="flex justify-center items-center flex-col overflow-x-auto py-8 sm:py-12 sm:px-8">
       <article className="w-full h-full mb-4 p-2">
-        {/* Table with Colleges list */}
       </article>
       {currentInstituteCode && (
         <article className="fixed w-full h-full bg-stone-200">
