@@ -2,15 +2,15 @@ import { gql } from '@apollo/client';
 
 export const CREATE_COLLEGE = gql`
   mutation CreateCollege(
-    $institute_code: string!
-    $institute_name: string!
-    $place: string!
-    $district_name: string!
-    $region: string!
-    $college_type: string!
-    $minority: string!
-    $co_educ: string!
-    $affiliated_to: string!
+    $institute_code: String!
+    $institute_name: String!
+    $place: String!
+    $district_name: String!
+    $region: String!
+    $college_type: String!
+    $minority: Boolean!
+    $co_educ: Boolean!
+    $affiliated_to: String!
   ) {
     createCollege(
       institute_code: $institute_code
@@ -39,9 +39,9 @@ export const CREATE_COLLEGE = gql`
 
 export const CREATE_COURSE = gql`
   mutation CreateCourse(
-    $institute_code: string!
+    $institute_code: String!
     $minority: Boolean!
-    $branch_code: string!
+    $branch_code: String!
     $fee: Float!
     $convener_seats: Int!
   ) {
