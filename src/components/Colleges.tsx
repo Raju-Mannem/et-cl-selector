@@ -3,14 +3,18 @@ import { GET_ALL_COLLEGES } from "@/graphql/queries";
 import { useQuery } from "@apollo/client";
 import React, { useState } from "react";
 import Course from "./Course";
+import { jsPDF } from "jspdf";
 
 export interface CurrentCourseProps {
   institute_code: string | String;
+  institute_name: string;
   branch_code: string;
-  convener_seats: string;
-  fee: string;
-  District: string;
-  minority: string;
+  district_name: string;
+  place: string;
+  region: string;
+  co_educ: string;
+  college_type: string;
+  affiliated_to: string;
 }
 
 interface College {
@@ -38,8 +42,8 @@ const Colleges = () => {
     }
   );
   const clType = ["PVT", "Private University", "SF", "UNIV"];
-  const [currentInstituteCode, setCurrentInstituteCode] = useState<
-    string | undefined
+  const [currentInstitute, setCurrentInstitute] = useState<
+    College | undefined
   >(undefined);
   const clTypeColor = [
     "bg-green-200",
@@ -48,14 +52,45 @@ const Colleges = () => {
     "bg-neutral-50",
   ];
   const [currentCourse, setCurrentCourse] = useState<CurrentCourseProps[]>([]);
-
-  const handleCourse = (currentInstituteCode: string) => {
-    setCurrentInstituteCode(currentInstituteCode);
+  
+  const handleCourse = (currentInstitute: College) => {
+    setCurrentInstitute(currentInstitute);
   };
 
   const closeModal = () => {
-    setCurrentInstituteCode(undefined);
+    setCurrentInstitute(undefined);
   };
+
+  const doc = new jsPDF("p", "mm", "a4");
+  const handlePDF = () => {
+    const article = document.getElementById("currentCollegeTable");
+    if (article) {
+      const imgURL = "/channels4_banner.jpg";
+      const imgWidth = 100;
+      const imgHeight = 10;
+      const xPos = (210 - imgWidth) / 2;
+      doc.addImage(imgURL, "WEBP", xPos, 10, imgWidth, imgHeight);  
+      doc.html(article, {
+        callback: function (doc) {
+          doc.save("eamcet_master_colleges.pdf");
+        },
+        margin: [15, 10, 10, 10],
+        x: 10,
+        y: 10,
+        html2canvas: {
+          scale: 0.14,
+          width: 180,
+          height: 270,
+          x: 0,
+          y: 0,
+          logging: false,
+          useCORS: true,
+          letterRendering: true,
+        },
+      });
+    }
+  };
+  
 
   if (loading)
     return (
@@ -93,20 +128,37 @@ const Colleges = () => {
     );
   return (
     <section className="flex justify-center items-center flex-col overflow-x-auto py-8 sm:py-12 sm:px-8">
-      <article className="w-full h-full mb-4 p-2">
+      <article className="w-full h-full mb-4" id="currentCollegeTable">
         <table className="min-w-full table-auto bg-white border border-collapse text-[4px] sm:text-[10px] font-sans">
           <thead className="bg-emerald-700 text-neutral-100 font-extrabold">
             <tr>
-              <th className="border border-gray-300  text-center p-2">S.NO</th>
-              <th className="border border-gray-300  text-center p-2">
+              <th className="border border-gray-300  text-center">S.NO</th>
+              <th className="border border-gray-300  text-center">
                 Institute Code
               </th>
-              <th className="border border-gray-300  text-center p-2">
-                Course Course
+              <th className="border border-gray-300 p-2 text-left ">
+                Institute Name
               </th>
-              <th className="border border-gray-300  text-center p-2">Seats</th>
               <th className="border border-gray-300  text-center p-2">
-                Convener Fee
+                Course
+              </th>
+              <th className="border border-gray-300 pl-2 py-2 w-xs text-left break-all">
+                PLace
+              </th>
+              <th className="border border-gray-300  text-center">
+                District
+              </th>
+              <th className="border border-gray-300  text-center">
+                Region
+              </th>
+              <th className="border border-gray-300 text-center p-2">
+              Coedu
+              </th>
+              <th className="border border-gray-300 text-center">
+                College Type
+              </th>
+              <th className="border border-gray-300  text-center">
+                Affiliated  To
               </th>
             </tr>
           </thead>
@@ -117,28 +169,54 @@ const Colleges = () => {
                   key={crCnt}
                   className="hover:bg-stone-50 hover:text-blue-500 h-4"
                 >
-                  <td className="border border-gray-300 p-2 text-center">
+                  <td className="border border-gray-300 text-center">
                     {crCnt + 1}
                   </td>
-                  <td className="border border-gray-300 p-2 text-center">
+                  <td className="border border-gray-300 text-center">
                     {selectedCrs.institute_code}
+                  </td>
+                  <td className="border border-gray-300 p-2">
+                    {selectedCrs.institute_name}
                   </td>
                   <td className="border border-gray-300 p-2 text-center">
                     {selectedCrs.branch_code}
                   </td>
-                  <td className="border border-gray-300 p-2 text-center">
-                    {selectedCrs.convener_seats}
+                  <td className="border border-gray-300 pl-2 py-2 w-xs text-left break-all">
+                  {selectedCrs.place}
+                  </td>
+                  <td className="border border-gray-300 text-center">
+                  {selectedCrs.district_name}
+                  </td>
+                  <td className="border border-gray-300 text-center">
+                  {selectedCrs.region}
                   </td>
                   <td className="border border-gray-300 p-2 text-center">
-                    {selectedCrs.fee}
+                  {selectedCrs.co_educ}
+                  </td>
+                  <td className="border border-gray-300 text-center">
+                  {selectedCrs.college_type}
+                  </td>
+                  <td className="border border-gray-300 text-center">
+                    {selectedCrs.affiliated_to}
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={5} className="text-center p-2"><strong>No courses selected</strong></td>
+                <td colSpan={10} className="text-center p-2"><strong>No courses selected</strong></td>
               </tr>
             )}
+             <tr className="text-center">
+            <td colSpan={10} className="text-center p-2 border-t">
+                    <button 
+                      onClick={()=>handlePDF()}
+                      className="bg-emerald-700 px-4 py-2 rounded"
+                    >
+                      <strong className="text-stone-50">print </strong>
+                      
+                    </button>
+                  </td>
+            </tr>
           </tbody>
         </table>
       </article>
@@ -191,7 +269,7 @@ const Colleges = () => {
                 >
                   <td className="border border-gray-300 py-2 text-center">
                     <button
-                      onClick={() => handleCourse(clg.institute_code)}
+                      onClick={() => handleCourse(clg)}
                       className="flex justify-center items-center gap-1 w-full h-full"
                     >
                       {clg.sno}
@@ -249,7 +327,7 @@ const Colleges = () => {
         </table>
       </article>
 
-      {currentInstituteCode && (
+      {currentInstitute && (
         <article className="fixed w-full h-full bg-stone-200">
           <aside className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-white p-8 w-11/12 sm:w-8/12 lg:w-6/12 rounded-md">
@@ -260,8 +338,9 @@ const Colleges = () => {
                 &times;
               </button>
               <Course
-                InstituteCode={currentInstituteCode}
+                InstituteCode={currentInstitute[`institute_code`]}
                 setCurrentCourse={setCurrentCourse}
+                currentInstitute={currentInstitute}
               />
             </div>
           </aside>

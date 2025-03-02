@@ -11,6 +11,19 @@ interface CourseProps {
   institute_code: string;
   District: string;
 }
+interface College {
+  sno: number;
+  institute_code: string;
+  institute_name: string;
+  place: string;
+  district_name: string;
+  region: string;
+  college_type: string;
+  minority: string;
+  co_educ: string;
+  affiliated_to: string;
+}
+
 
 interface GetCoursesByInstituteData {
   getCoursesByInstitute?: CourseProps[];
@@ -19,9 +32,10 @@ interface GetCoursesByInstituteData {
 interface InstituteCodeProps {
   InstituteCode: string;
   setCurrentCourse: React.Dispatch<React.SetStateAction<CurrentCourseProps[]>>;
+  currentInstitute : College;
 }
 
-const Course = ({ InstituteCode, setCurrentCourse }: InstituteCodeProps) => {
+const Course = ({ InstituteCode, setCurrentCourse, currentInstitute }: InstituteCodeProps) => {
   const { data, loading, error } = useQuery<GetCoursesByInstituteData>(
     GET_COURSES_BY_INSTITUTE,
     {
@@ -32,9 +46,18 @@ const Course = ({ InstituteCode, setCurrentCourse }: InstituteCodeProps) => {
   const handleSelectedCourse = (course: CourseProps) => {
     setCurrentCourse((prevSelectedCourses) => [
       ...prevSelectedCourses,
-      course as CurrentCourseProps,
+      {
+        institute_code: currentInstitute["institute_code"],
+        branch_code: course.branch_code,
+        institute_name: currentInstitute["institute_name"],
+        district_name: currentInstitute["district_name"],
+        place: currentInstitute["place"],
+        region: currentInstitute["region"],
+        co_educ: currentInstitute["co_educ"],
+        college_type: currentInstitute["college_type"],
+        affiliated_to: currentInstitute["affiliated_to"],
+      },
     ]);
-    alert("Course was added");
   };
 
   if (loading)
@@ -68,7 +91,6 @@ const Course = ({ InstituteCode, setCurrentCourse }: InstituteCodeProps) => {
             error.graphQLErrors.map(({ message }, i) => (
               <span key={i}>{message}</span>
             ))}
-          {JSON.stringify(error)}
           course error
         </pre>
       </section>
