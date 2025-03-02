@@ -1,13 +1,19 @@
+import Link from "next/link";
+
 export default function Home() {
   
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start bg-slate-800">
-       
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        
-      </footer>
-    </div>
+    <main className="grid items-center justify-center items-center min-h-screen pb-2 sm:pb-20 font-[family-name:var(--font-geist-sans)]">
+      <article className="flex flex-col items-center sm:items-center mt-2 sm:mt-12">
+        <h1 className="text-blue-500 font-bold py sm:py-4 text-4xl sm:text-9xl">Campus Logics</h1>
+        <p className="text-blue-500 font-bold py-4 text-[6px] sm:text-lg">Bridging the gap between Engineering and Intermediate</p>
+        <Link 
+        href="/dashboard"
+        className="ring rounded-full bg-blue-500 text-stone-50 font-bold py-2 text-sm px-4 py-2 mt-6 "
+        >
+          select colleges
+        </Link>
+      </article>
+    </main>
   );
 }
