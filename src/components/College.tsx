@@ -2,6 +2,7 @@
 import { GET_ALL_COLLEGES } from "@/graphql/queries";
 import { useQuery } from "@apollo/client";
 import React, { useState } from "react";
+import { jsPDF } from "jspdf";
 
 interface CollegeProps {
   sno: number;
@@ -17,7 +18,7 @@ interface CollegeProps {
 }
 
 interface GetAllCollegesData {
-  getColleges?: College[];
+  getColleges?: CollegeProps[];
 }
 
 const College = () => {
@@ -36,15 +37,44 @@ const College = () => {
     "bg-neutral-50",
   ];
   const [currentCollege, setCurrentCollege] = useState<CollegeProps[]>([]);
+  const doc = new jsPDF("p", "mm", "a4");
 
-  const handleCollege = (currentCollege: CollegeProps => {
-    setCurrentCollege((prevColleges)=>[
-	...prevColleges,
-	currentCollege as CollegeProps
-	]);
+  const handleCollege = (currentCollege: CollegeProps) => {
+    setCurrentCollege((prevColleges) => [
+      ...prevColleges,
+      currentCollege as CollegeProps,
+    ]);
   };
 
-
+  const handlePDF = () => {
+    const article = document.getElementById("currentCollegeTable");
+    if (article) {
+      const imgURL = "/channels4_banner.jpg";
+      const imgWidth = 100;
+      const imgHeight = 10;
+      const xPos = (210 - imgWidth) / 2;
+      doc.addImage(imgURL, "WEBP", xPos, 10, imgWidth, imgHeight);  
+      doc.html(article, {
+        callback: function (doc) {
+          doc.save("eamcet_master_colleges.pdf");
+        },
+        margin: [15, 10, 10, 10],
+        x: 10,
+        y: 10,
+        html2canvas: {
+          scale: 0.14,
+          width: 180,
+          height: 270,
+          x: 0,
+          y: 0,
+          logging: false,
+          useCORS: true,
+          letterRendering: true,
+        },
+      });
+    }
+  };
+  
   if (loading)
     return (
       <section className="h-screen w-full bg-gray-100 flex justify-center items-center text-blue-500">
@@ -81,7 +111,7 @@ const College = () => {
     );
   return (
     <section className="flex justify-center items-center flex-col overflow-x-auto py-8 sm:py-12 sm:px-8">
-<article className="w-full h-full">
+      <article className="w-full h-full"  id="currentCollegeTable">
         <table className="min-w-full table-auto bg-white border border-collapse text-[4px] sm:text-[10px] font-sans">
           <thead className="bg-emerald-700 text-neutral-100 font-extrabold">
             <tr>
@@ -94,34 +124,34 @@ const College = () => {
               <th className="border border-gray-300 pl-2 py-2 w-lg text-left">
                 Institute Name
               </th>
-              <th className="border border-gray-300 pl-2 py-2 w-xs text-left break-all">
+              <th className="border border-gray-300 pl-2 py-2 w-xs  text-left py-2 break-all">
                 Place
               </th>
-              <th className="border border-gray-300 text-center py-2 w-sm">
-                District Name
+              <th className="border border-gray-300 text-center w-sm">
+                District
               </th>
               <th className="border border-gray-300 text-center py-2 w-xs">
                 Region
               </th>
               <th className="border border-gray-300 text-center py-2 w-sm">
-                College Type
+                Co-Educ
               </th>
               <th className="border border-gray-300 text-center py-2 w-xs">
                 Minority
               </th>
               <th className="border border-gray-300 text-center py-2 w-xs">
-                Co-Educ
+                College Type
               </th>
               <th className="border border-gray-300 text-center py-2 w-xs">
                 Affiliated To
               </th>
             </tr>
           </thead>
-<tbody className="text-neutral-900">
-            {currentCollege? && Array.isArray(currentCollege) ? (
-              currentCollege.map((clg) => (
+          <tbody className="text-neutral-900">
+            {currentCollege.length > 0 && Array.isArray(currentCollege) ? (
+              currentCollege.map((clg, index) => (
                 <tr
-                  key={clg.sno}
+                  key={index+1}
                   className={`hover:bg-stone-50 hover:text-blue-500 ${
                     clTypeColor[
                       clType.findIndex((type) => type === clg.college_type)
@@ -129,7 +159,7 @@ const College = () => {
                   } h-4`}
                 >
                   <td className="border border-gray-300 py-2 text-center">
-                      {clg.sno}
+                    {index+1}
                   </td>
                   <td className="border border-gray-300 py-2 text-center max-w-min">
                     {clg.institute_code}
@@ -147,13 +177,13 @@ const College = () => {
                     {clg.region}
                   </td>
                   <td className="border border-gray-300 py-2 text-center">
-                    {clg.college_type}
+                    {clg.co_educ}
                   </td>
                   <td className="border border-gray-300 py-2 text-center">
                     {clg.minority}
                   </td>
                   <td className="border border-gray-300 py-2 text-center">
-                    {clg.co_educ}
+                    {clg.college_type}
                   </td>
                   <td className="border border-gray-300 py-2 text-center">
                     {clg.affiliated_to}
@@ -161,15 +191,25 @@ const College = () => {
                 </tr>
               ))
             ) : (
-              <tr>
-                <td colSpan={10}>No colleges selected</td>
+              <tr className="text-center">
+                <td colSpan={10} className="text-center p-2"><strong>No Colleges selected</strong></td>
               </tr>
             )}
+            <tr className="text-center">
+            <td colSpan={10} className="text-center p-2 border-t">
+                    <button 
+                      onClick={()=>handlePDF()}
+                      className="bg-emerald-700 px-4 py-2 rounded"
+                    >
+                      <strong className="text-stone-50">print </strong>
+                      
+                    </button>
+                  </td>
+            </tr>
           </tbody>
         </table>
       </article>
-
-      <article className="w-full h-full">
+      <article className="w-full h-full my-4">
         <table className="min-w-full table-auto bg-white border border-collapse text-[4px] sm:text-[10px] font-sans">
           <thead className="bg-emerald-700 text-neutral-100 font-extrabold">
             <tr>
@@ -186,19 +226,19 @@ const College = () => {
                 Place
               </th>
               <th className="border border-gray-300 text-center py-2 w-sm">
-                District Name
+                District
               </th>
               <th className="border border-gray-300 text-center py-2 w-xs">
                 Region
               </th>
               <th className="border border-gray-300 text-center py-2 w-sm">
-                College Type
+                Co-Educ
               </th>
               <th className="border border-gray-300 text-center py-2 w-xs">
                 Minority
               </th>
               <th className="border border-gray-300 text-center py-2 w-xs">
-                Co-Educ
+                College Type
               </th>
               <th className="border border-gray-300 text-center py-2 w-xs">
                 Affiliated To
@@ -247,20 +287,20 @@ const College = () => {
                   <td className="border border-gray-300 pl-2 py-2 break-all">
                     {clg.place}
                   </td>
-                  <td className="border border-gray-300 py-2 text-center">
+                  <td className="border border-gray-300 py-2 text-center ">
                     {clg.district_name}
                   </td>
                   <td className="border border-gray-300 py-2 text-center">
                     {clg.region}
                   </td>
                   <td className="border border-gray-300 py-2 text-center">
-                    {clg.college_type}
+                    {clg.co_educ}
                   </td>
                   <td className="border border-gray-300 py-2 text-center">
                     {clg.minority}
                   </td>
                   <td className="border border-gray-300 py-2 text-center">
-                    {clg.co_educ}
+                    {clg.college_type}
                   </td>
                   <td className="border border-gray-300 py-2 text-center">
                     {clg.affiliated_to}
@@ -275,7 +315,6 @@ const College = () => {
           </tbody>
         </table>
       </article>
-
     </section>
   );
 };
