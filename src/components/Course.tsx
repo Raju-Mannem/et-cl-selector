@@ -24,18 +24,18 @@ interface College {
   affiliated_to: string;
 }
 
-
 interface GetCoursesByInstituteData {
   getCoursesByInstitute?: CourseProps[];
 }
 
 interface InstituteCodeProps {
   InstituteCode: string;
+  currentCourse: CurrentCourseProps[];
   setCurrentCourse: React.Dispatch<React.SetStateAction<CurrentCourseProps[]>>;
   currentInstitute : College;
 }
 
-const Course = ({ InstituteCode, setCurrentCourse, currentInstitute }: InstituteCodeProps) => {
+const Course = ({ InstituteCode, currentCourse, setCurrentCourse, currentInstitute }: InstituteCodeProps) => {
   const { data, loading, error } = useQuery<GetCoursesByInstituteData>(
     GET_COURSES_BY_INSTITUTE,
     {
@@ -44,6 +44,16 @@ const Course = ({ InstituteCode, setCurrentCourse, currentInstitute }: Institute
   );
 
   const handleSelectedCourse = (course: CourseProps) => {
+    const instituteExists = currentCourse.some(
+      (college) => college.institute_code === course.institute_code
+    );
+    const branchExists = currentCourse.some(
+      (college) => college.branch_code === course.branch_code
+    );
+    if(instituteExists&&branchExists){
+      alert("course already existed");
+    }
+    else{
     setCurrentCourse((prevSelectedCourses) => [
       ...prevSelectedCourses,
       {
@@ -58,6 +68,7 @@ const Course = ({ InstituteCode, setCurrentCourse, currentInstitute }: Institute
         affiliated_to: currentInstitute["affiliated_to"],
       },
     ]);
+  }
   };
 
   if (loading)

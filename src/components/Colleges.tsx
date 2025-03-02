@@ -90,6 +90,28 @@ const Colleges = () => {
       });
     }
   };
+
+  const handlePosition = (currentKey:number,action:string) => {
+    if(currentKey<currentCourse.length-1){
+    if(action=='up' && currentKey>0){
+      const updatedColleges = [...currentCourse];
+      const temp = updatedColleges[currentKey - 1];
+      updatedColleges[currentKey - 1] = updatedColleges[currentKey];
+      updatedColleges[currentKey] = temp;
+      setCurrentCourse(updatedColleges);
+    }
+    else{
+      const updatedColleges = [...currentCourse];
+      const temp = updatedColleges[currentKey + 1];
+      updatedColleges[currentKey + 1] = updatedColleges[currentKey];
+      updatedColleges[currentKey] = temp;
+      setCurrentCourse(updatedColleges);
+    }
+    }
+    else{
+      alert("out of position can't update");
+    }
+  };
   
 
   if (loading)
@@ -169,8 +191,46 @@ const Colleges = () => {
                   key={crCnt}
                   className="hover:bg-stone-50 hover:text-blue-500 h-4"
                 >
-                  <td className="border border-gray-300 text-center">
+                  <td className="border border-gray-300 py-2 text-center flex justify-center items-center gap-2">
                     {crCnt + 1}
+                    <span className="flex items-center justify-center flex-col gap-1">
+                      <button 
+                        className="hover:bg-emerald-700 rounded-full hover:text-stone-50"
+                        onClick={()=>handlePosition(crCnt,'up')}
+                        >
+                        <svg xmlns="http://www.w3.org/2000/svg" 
+                          fill="none" 
+                          viewBox="0 0 24 24" 
+                          strokeWidth={1.5} 
+                          stroke="currentColor" 
+                          className="size-1 sm:size-2"
+                        >
+                          <path 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round" 
+                            d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" 
+                          />
+                        </svg>
+                        </button>
+                        <button 
+                          className="hover:bg-emerald-700 rounded-full hover:text-stone-50"
+                          onClick={()=>handlePosition(crCnt,'down')}
+                        >
+                        <svg xmlns="http://www.w3.org/2000/svg" 
+                          fill="none" 
+                          viewBox="0 0 24 24" 
+                          strokeWidth={1.5} 
+                          stroke="currentColor" 
+                          className="size-1 sm:size-2"
+                          >
+                            <path 
+                              strokeLinecap="round" 
+                              strokeLinejoin="round" 
+                              d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" 
+                            />
+                        </svg>
+                      </button>
+                    </span>
                   </td>
                   <td className="border border-gray-300 text-center">
                     {selectedCrs.institute_code}
@@ -340,6 +400,7 @@ const Colleges = () => {
               <Course
                 InstituteCode={currentInstitute[`institute_code`]}
                 setCurrentCourse={setCurrentCourse}
+                currentCourse={currentCourse}
                 currentInstitute={currentInstitute}
               />
             </div>
