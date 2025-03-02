@@ -19,19 +19,19 @@ const Navbar = () => {
       <nav className="mx-4 hidden sm:block text-blue-500 font-bold">
   <ul className="flex items-center justify-between gap-12">
     <li className="relative group">
-      <Link href="/" className="block py-2">
+      <Link href="/" className="block py-2 focus:outline-0">
         Home
       </Link>
       <span className="absolute left-0 right-0 bottom-0 h-[2px] bg-blue-300 scale-x-0 group-hover:scale-x-100 transition-all duration-2000 ease-in-out"></span>
     </li>
     <li className="relative group">
-      <Link href="/about" className="block py-2">
+      <Link href="/about" className="block py-2 focus:outline-0">
         About
       </Link>
       <span className="absolute left-0 right-0 bottom-0 h-[2px] bg-blue-300 scale-x-0 group-hover:scale-x-100 transition-all duration-2000 ease-in-out"></span>
     </li>
     <li className="relative group">
-      <Link href="/contact" className="block py-2">
+      <Link href="/contact" className="block py-2 focus:outline-0">
         Contact
       </Link>
       <span className="absolute left-0 right-0 bottom-0 h-[2px] bg-blue-300 scale-x-0 group-hover:scale-x-100 transition-all duration-2000 ease-in-out"></span>
