@@ -37,32 +37,18 @@ const College = () => {
     "bg-neutral-50",
   ];
   const [currentCollege, setCurrentCollege] = useState<CollegeProps[]>([]);
+
   const doc = new jsPDF("p", "mm", "a4");
 
-  const handleCollege = (selectedCollege: CollegeProps) => {
-    const collegeExists = currentCollege.some(
-      (college) => college.institute_code === selectedCollege.institute_code
-    );
-    if (collegeExists) {
-      alert("college already existed");
-    }
-    else{
-    setCurrentCollege((prevColleges) => [
-      ...prevColleges,
-      selectedCollege as CollegeProps,
-    ]);
-  }
-  };
-
-  const handlePDF = () => {
-    const article = document.getElementById("currentCollegeTable");
-    if (article) {
+   const handlePDF = () => {
+    const table = document.getElementById("currentCollegeTable");
+    if (table) {
       const imgURL = "/channels4_banner.jpg";
       const imgWidth = 100;
       const imgHeight = 10;
       const xPos = (210 - imgWidth) / 2;
       doc.addImage(imgURL, "WEBP", xPos, 10, imgWidth, imgHeight);  
-      doc.html(article, {
+      doc.html(table, {
         callback: function (doc) {
           doc.save("eamcet_master_colleges.pdf");
         },
@@ -81,6 +67,21 @@ const College = () => {
         },
       });
     }
+  };
+
+  const handleCollege = (selectedCollege: CollegeProps) => {
+    const collegeExists = currentCollege.some(
+      (college) => college.institute_code === selectedCollege.institute_code
+    );
+    if (collegeExists) {
+      alert("college already existed");
+    }
+    else{
+    setCurrentCollege((prevColleges) => [
+      ...prevColleges,
+      selectedCollege as CollegeProps,
+    ]);
+  }
   };
 
   const handlePosition = (currentKey:number,action:string) => {
@@ -141,8 +142,8 @@ const College = () => {
     );
   return (
     <section className="flex justify-center items-center flex-col overflow-x-auto py-8 sm:py-12 sm:px-8">
-      <article className="w-full h-full"  id="currentCollegeTable">
-        <table className="min-w-full table-auto bg-white border border-collapse text-[4px] sm:text-[10px] font-sans">
+      <article className="w-full h-full">
+        <table className="min-w-full table-auto bg-white border border-collapse text-[4px] sm:text-[10px] font-sans" id="currentCollegeTable">
           <thead className="bg-emerald-700 text-neutral-100 font-extrabold">
             <tr>
               <th className="border border-gray-300 text-center py-2 w-xs">
@@ -188,44 +189,20 @@ const College = () => {
                     ]
                   } h-4`}
                 >
-                  <td className="border border-gray-300 py-2 text-center flex justify-center items-center gap-2">
+                  <td className="border border-gray-300 py-2 text-center flex justify-center items-center gap-1">
                     {index+1}
                     <span className="flex items-center justify-center flex-col gap-1">
                       <button 
                         className="hover:bg-emerald-700 rounded-full hover:text-stone-50"
                         onClick={()=>handlePosition(index,'up')}
                         >
-                        <svg xmlns="http://www.w3.org/2000/svg" 
-                          fill="none" 
-                          viewBox="0 0 24 24" 
-                          strokeWidth={1.5} 
-                          stroke="currentColor" 
-                          className="size-1 sm:size-2"
-                        >
-                          <path 
-                            strokeLinecap="round" 
-                            strokeLinejoin="round" 
-                            d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" 
-                          />
-                        </svg>
+                          ↑
                         </button>
                         <button 
                           className="hover:bg-emerald-700 rounded-full hover:text-stone-50"
                           onClick={()=>handlePosition(index,'down')}
                         >
-                        <svg xmlns="http://www.w3.org/2000/svg" 
-                          fill="none" 
-                          viewBox="0 0 24 24" 
-                          strokeWidth={1.5} 
-                          stroke="currentColor" 
-                          className="size-1 sm:size-2"
-                          >
-                            <path 
-                              strokeLinecap="round" 
-                              strokeLinejoin="round" 
-                              d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" 
-                            />
-                        </svg>
+                          ↓
                       </button>
                     </span>
                   </td>
