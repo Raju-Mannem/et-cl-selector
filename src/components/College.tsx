@@ -142,8 +142,8 @@ const College = () => {
     );
   return (
     <section className="flex justify-center items-center flex-col overflow-x-auto py-8 sm:py-12 sm:px-8">
-      <article className="w-full h-full">
-        <table className="min-w-full table-auto bg-white border border-collapse text-[4px] sm:text-[10px] font-sans" id="currentCollegeTable">
+      <article className="w-full h-full" id="currentCollegeTable">
+        <table className="min-w-full table-auto bg-white border border-collapse text-[4px] sm:text-[10px] font-sans">
           <thead className="bg-emerald-700 text-neutral-100 font-extrabold">
             <tr>
               <th className="border border-gray-300 text-center py-2 w-xs">
@@ -183,11 +183,7 @@ const College = () => {
               currentCollege.map((clg, index) => (
                 <tr
                   key={index+1}
-                  className={`hover:bg-stone-50 hover:text-blue-500 ${
-                    clTypeColor[
-                      clType.findIndex((type) => type === clg.college_type)
-                    ]
-                  } h-4`}
+                  className="hover:bg-stone-50 hover:text-blue-500 h-4"
                 >
                   <td className="border border-gray-300 py-2 text-center flex justify-center items-center gap-1">
                     {index+1}
