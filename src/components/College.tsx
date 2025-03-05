@@ -183,7 +183,7 @@ const College = () => {
               currentCollege.map((clg, index) => (
                 <tr
                   key={index+1}
-                  className="hover:bg-stone-50 hover:text-blue-500 h-4"
+                  className={`hover:bg-stone-50 hover:text-blue-500 h-4 ${index % 2 != 0 ? 'bg-gray-100' : ''}`}
                 >
                   <td className="border border-gray-300 py-2 text-center flex justify-center items-center gap-1">
                     {index+1}
