@@ -50,7 +50,7 @@ const College = () => {
       doc.addImage(imgURL, "WEBP", xPos, 10, imgWidth, imgHeight);  
       doc.html(table, {
         callback: function (doc) {
-          doc.save("eamcet_master_colleges.pdf");
+          doc.save("eamcet_master_ap_colleges.pdf");
         },
         margin: [15, 10, 10, 10],
         x: 10,
