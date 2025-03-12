@@ -3,6 +3,7 @@ import { GET_ALL_COLLEGES } from "@/graphql/queries";
 import { useQuery } from "@apollo/client";
 import React, { useState } from "react";
 import { jsPDF } from "jspdf";
+import { autoTable } from 'jspdf-autotable'
 
 interface CollegeProps {
   sno: number;
@@ -38,35 +39,44 @@ const College = () => {
   ];
   const [currentCollege, setCurrentCollege] = useState<CollegeProps[]>([]);
 
-  const doc = new jsPDF("p", "mm", "a4");
-
    const handlePDF = () => {
-    const table = document.getElementById("currentCollegeTable");
-    if (table) {
-      const imgURL = "/channels4_banner.jpg";
-      const imgWidth = 100;
-      const imgHeight = 10;
-      const xPos = (210 - imgWidth) / 2;
-      doc.addImage(imgURL, "WEBP", xPos, 10, imgWidth, imgHeight);  
-      doc.html(table, {
-        callback: function (doc) {
-          doc.save("eamcet_master_ap_colleges.pdf");
-        },
-        margin: [15, 10, 10, 10],
-        x: 10,
-        y: 10,
-        html2canvas: {
-          scale: 0.14,
-          width: 180,
-          height: 270,
-          x: 0,
-          y: 0,
-          logging: false,
-          useCORS: true,
-          letterRendering: true,
-        },
-      });
-    }
+    const doc = new jsPDF();
+    const tableData = currentCollege.map((clg, index) => [
+      index+1,
+      clg.institute_code,
+      clg.institute_name,
+      clg.place,
+      clg.district_name,
+      clg.region,
+      clg.co_educ,
+      clg.college_type,
+      clg.affiliated_to,
+    ]);
+    const tableColumn = [
+      "S.NO", "Institute Code", "Institute Name", "Place", "District", "Region",
+      "Co-Educ", "College Type", "Affiliated To"
+    ];
+    autoTable(doc,{
+      head: [tableColumn],
+      body: tableData,
+      margin: { top: 10 },
+      styles: { fontSize: 4 },
+      columnStyles: {
+        2: { cellWidth: 'auto', halign: 'left' },
+        0: { halign: 'center' },
+        1: { halign: 'center' },
+        3: { halign: 'left' },
+        4: { halign: 'center' },
+        5: { halign: 'center' },
+        6: { halign: 'center' },
+        7: { halign: 'center' },
+        8: { halign: 'center' }, 
+        
+      },
+      theme: 'grid',
+    });
+  
+    doc.save("eamcet-master-ap-colleges.pdf");
   };
 
   const handleCollege = (selectedCollege: CollegeProps) => {
@@ -168,9 +178,6 @@ const College = () => {
                 Co-Educ
               </th>
               <th className="border border-gray-300 text-center py-2 w-xs">
-                Minority
-              </th>
-              <th className="border border-gray-300 text-center py-2 w-xs">
                 College Type
               </th>
               <th className="border border-gray-300 text-center py-2 w-xs">
@@ -219,9 +226,6 @@ const College = () => {
                   </td>
                   <td className="border border-gray-300 py-2 text-center">
                     {clg.co_educ}
-                  </td>
-                  <td className="border border-gray-300 py-2 text-center">
-                    {clg.minority}
                   </td>
                   <td className="border border-gray-300 py-2 text-center">
                     {clg.college_type}

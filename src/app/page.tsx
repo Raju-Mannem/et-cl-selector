@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function Home() {
   
   return (
-    <main className="grid items-center justify-center items-center min-h-screen pb-2 sm:pb-20 font-[family-name:var(--font-geist-sans)]">
+    <main className="grid items-center justify-center min-h-screen pb-2 sm:pb-20  font-[family-name:var(--font-geist-sans)]">
       <article className="flex flex-col items-center sm:items-center mt-2 sm:mt-12">
         <h1 className="text-blue-500 font-bold py sm:py-4 text-4xl sm:text-9xl">Campus Logics</h1>
         <p className="text-blue-500 font-bold py-4 text-[6px] sm:text-lg">Bridging the gap between AP Engineering and Intermediate</p>
