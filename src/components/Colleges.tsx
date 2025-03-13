@@ -107,7 +107,7 @@ const Colleges = () => {
       theme: 'grid',
     });
   
-    doc.save("eamcet-master-ap-colleges.pdf");
+    doc.save("eamcet-master-ap-courses.pdf");
   };
 
   const handlePosition = (currentKey:number,action:string) => {
