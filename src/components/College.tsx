@@ -3,7 +3,7 @@ import { GET_ALL_COLLEGES } from "@/graphql/queries";
 import { useQuery } from "@apollo/client";
 import React, { useState } from "react";
 import { jsPDF } from "jspdf";
-import { autoTable } from 'jspdf-autotable'
+import { autoTable } from 'jspdf-autotable';
 
 interface CollegeProps {
   sno: number;
@@ -41,6 +41,11 @@ const College = () => {
 
    const handlePDF = () => {
     const doc = new jsPDF();
+    const imgURL = "/EAMCET INSTRUCTIONS_page-0001.jpg";
+    doc.addImage(imgURL, "PNG", 5, 10, 200, 250);  
+    
+    doc.addPage("p");
+    
     const tableData = currentCollege.map((clg, index) => [
       index+1,
       clg.institute_code,
@@ -96,20 +101,20 @@ const College = () => {
 
   const handlePosition = (currentKey:number,action:string) => {
     if(currentKey<currentCollege.length-1){
-    if(action=='up' && currentKey>0){
-      const updatedColleges = [...currentCollege];
-      const temp = updatedColleges[currentKey - 1];
-      updatedColleges[currentKey - 1] = updatedColleges[currentKey];
-      updatedColleges[currentKey] = temp;
-      setCurrentCollege(updatedColleges);
-    }
-    else{
-      const updatedColleges = [...currentCollege];
-      const temp = updatedColleges[currentKey + 1];
-      updatedColleges[currentKey + 1] = updatedColleges[currentKey];
-      updatedColleges[currentKey] = temp;
-      setCurrentCollege(updatedColleges);
-    }
+      if(action=='up' && currentKey>0){
+        const updatedColleges = [...currentCollege];
+        const temp = updatedColleges[currentKey - 1];
+        updatedColleges[currentKey - 1] = updatedColleges[currentKey];
+        updatedColleges[currentKey] = temp;
+        setCurrentCollege(updatedColleges);
+      }
+      else{
+        const updatedColleges = [...currentCollege];
+        const temp = updatedColleges[currentKey + 1];
+        updatedColleges[currentKey + 1] = updatedColleges[currentKey];
+        updatedColleges[currentKey] = temp;
+        setCurrentCollege(updatedColleges);
+      }
     }
     else{
       alert("out of position can't update");
@@ -152,7 +157,7 @@ const College = () => {
     );
   return (
     <section className="flex justify-center items-center flex-col overflow-x-auto py-8 sm:py-12 sm:px-8">
-      <article className="w-full h-full" id="currentCollegeTable">
+      <article className="w-full h-full">
         <table className="min-w-full table-auto bg-white border border-collapse text-[4px] sm:text-[10px] font-sans">
           <thead className="bg-emerald-700 text-neutral-100 font-extrabold">
             <tr>
