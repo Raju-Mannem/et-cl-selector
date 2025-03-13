@@ -4,9 +4,11 @@ import { useQuery } from "@apollo/client";
 import React, { useState } from "react";
 import Course from "./Course";
 import { jsPDF } from "jspdf";
+import { autoTable } from 'jspdf-autotable';
+
 
 export interface CurrentCourseProps {
-  institute_code: string | String;
+  institute_code: string;
   institute_name: string;
   branch_code: string;
   district_name: string;
@@ -61,34 +63,51 @@ const Colleges = () => {
     setCurrentInstitute(undefined);
   };
 
-  const doc = new jsPDF("p", "mm", "a4");
   const handlePDF = () => {
-    const article = document.getElementById("currentCollegeTable");
-    if (article) {
-      const imgURL = "/channels4_banner.jpg";
-      const imgWidth = 100;
-      const imgHeight = 10;
-      const xPos = (210 - imgWidth) / 2;
-      doc.addImage(imgURL, "WEBP", xPos, 10, imgWidth, imgHeight);  
-      doc.html(article, {
-        callback: function (doc) {
-          doc.save("eamcet_master_colleges.pdf");
-        },
-        margin: [15, 10, 10, 10],
-        x: 10,
-        y: 10,
-        html2canvas: {
-          scale: 0.14,
-          width: 180,
-          height: 270,
-          x: 0,
-          y: 0,
-          logging: false,
-          useCORS: true,
-          letterRendering: true,
-        },
-      });
-    }
+    const doc = new jsPDF();
+    const imgURL = "/EAMCET INSTRUCTIONS_page-0001.jpg";
+    doc.addImage(imgURL, "PNG", 5, 10, 200, 250);  
+    
+    doc.addPage("p");
+    
+    const tableData = currentCourse.map((selectedCrs, index) => [
+      index+1,
+      selectedCrs.institute_code,
+      selectedCrs.institute_name,
+      selectedCrs.branch_code,
+      selectedCrs.place,
+      selectedCrs.district_name,
+      selectedCrs.region,
+      selectedCrs.co_educ,
+      selectedCrs.college_type,
+      selectedCrs.affiliated_to,
+    ]);
+
+    const tableColumn = [
+      "S.NO", "Institute Code", "Institute Name", "Course", "Place", "District", "Region",
+      "Co-Educ", "College Type", "Affiliated To"
+    ];
+    autoTable(doc,{
+      head: [tableColumn],
+      body: tableData,
+      margin: { top: 10 },
+      styles: { fontSize: 4 },
+      columnStyles: {
+        2: { cellWidth: 'auto', halign: 'left' },
+        0: { halign: 'center' },
+        1: { halign: 'center' },
+        3: { halign: 'left' },
+        4: { halign: 'center' },
+        5: { halign: 'center' },
+        6: { halign: 'center' },
+        7: { halign: 'center' },
+        8: { halign: 'center' }, 
+        
+      },
+      theme: 'grid',
+    });
+  
+    doc.save("eamcet-master-ap-colleges.pdf");
   };
 
   const handlePosition = (currentKey:number,action:string) => {
