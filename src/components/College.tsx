@@ -3,7 +3,7 @@ import { GET_ALL_COLLEGES } from "@/graphql/queries";
 import { useQuery } from "@apollo/client";
 import React, { useState } from "react";
 import { jsPDF } from "jspdf";
-import { autoTable } from 'jspdf-autotable';
+import { autoTable } from "jspdf-autotable";
 
 interface CollegeProps {
   sno: number;
