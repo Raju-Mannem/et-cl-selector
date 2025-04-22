@@ -65,11 +65,12 @@ const Colleges = () => {
 
   const handlePDF = () => {
     const doc = new jsPDF();
-    const imgURL = "/EAMCET INSTRUCTIONS_page-0001.jpg";
+    /**
+	const imgURL = "/EAMCET INSTRUCTIONS_page-0001.jpg";
     doc.addImage(imgURL, "PNG", 5, 10, 200, 250);  
     
     doc.addPage("p");
-    
+    **/
     const tableData = currentCourse.map((selectedCrs, index) => [
       index+1,
       selectedCrs.institute_code,

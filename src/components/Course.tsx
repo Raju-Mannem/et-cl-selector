@@ -2,6 +2,7 @@ import { GET_COURSES_BY_INSTITUTE } from "@/graphql/queries";
 import { useQuery } from "@apollo/client";
 import { CurrentCourseProps } from "./Colleges";
 import React from "react";
+import { toast } from 'sonner'
 
 interface CourseProps {
   branch_code: string;
@@ -52,6 +53,7 @@ const Course = ({ InstituteCode, currentCourse, setCurrentCourse, currentInstitu
     );
     if(instituteExists&&branchExists){
       alert("course already existed");
+	  toast.error(`${course.institute_code} course ${course.branch_code} already existed`);
     }
     else{
     setCurrentCourse((prevSelectedCourses) => [
@@ -68,6 +70,7 @@ const Course = ({ InstituteCode, currentCourse, setCurrentCourse, currentInstitu
         affiliated_to: currentInstitute["affiliated_to"],
       },
     ]);
+	toast.success(`${course.institute_code} course ${course.branch_code} added successfully`);
   }
   };
 
