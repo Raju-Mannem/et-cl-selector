@@ -1,0 +1,15 @@
+export const districtOptions = [
+  { label: "Anantapur", value: "ATP" },
+  { label: "Chittoor", value: "CTR" },
+  { label: "East Godavari", value: "EG" },
+  { label: "Guntur", value: "GTR" },
+  { label: "Krishna", value: "KRI" },
+  { label: "Kadapa (YSR Kadapa)", value: "KDP" },
+  { label: "Kurnool", value: "KNL" },
+  { label: "Nellore (Sri Potti Sriramulu Nellore)", value: "NLR" },
+  { label: "Prakasam", value: "PKS" },
+  { label: "Srikakulam", value: "SKL" },
+  { label: "Visakhapatnam", value: "VSP" },
+  { label: "Vizianagaram", value: "VZM" },
+  { label: "West Godavari", value: "WG" },
+];
