@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const CREATE_COLLEGE = gql`
   mutation CreateCollege(
@@ -58,6 +58,88 @@ export const CREATE_COURSE = gql`
       branch_code
       fee
       convener_seats
+    }
+  }
+`;
+
+export const CREATE_AP_CUTOFF_2024 = gql`
+  mutation CreateApCutoff2024($data: ApCutoff2024Input!) {
+    createApCutoff2024(data: $data) {
+      sno
+      inst_code
+      institute_name
+      place
+      dist_code
+      co_education
+      college_type
+      year_of_estab
+      branch_code
+      branch_name
+      oc_boys
+      oc_girls
+      bc_a_boys
+      bc_a_girls
+      bc_b_boys
+      bc_b_girls
+      bc_c_boys
+      bc_c_girls
+      bc_d_boys
+      bc_d_girls
+      bc_e_boys
+      bc_e_girls
+      sc_boys
+      sc_girls
+      st_boys
+      st_girls
+      ews_gen_ou
+      ews_girls_ou
+      tuition_fee
+      affiliated_to
+    }
+  }
+`;
+
+export const UPDATE_AP_CUTOFF_2024 = gql`
+  mutation UpdateApCutoff2024($sno: Float!, $data: ApCutoff2024Input!) {
+    updateApCutoff2024(sno: $sno, data: $data) {
+      sno
+      inst_code
+      institute_name
+      place
+      dist_code
+      co_education
+      college_type
+      year_of_estab
+      branch_code
+      branch_name
+      oc_boys
+      oc_girls
+      bc_a_boys
+      bc_a_girls
+      bc_b_boys
+      bc_b_girls
+      bc_c_boys
+      bc_c_girls
+      bc_d_boys
+      bc_d_girls
+      bc_e_boys
+      bc_e_girls
+      sc_boys
+      sc_girls
+      st_boys
+      st_girls
+      ews_gen_ou
+      ews_girls_ou
+      tuition_fee
+      affiliated_to
+    }
+  }
+`;
+
+export const DELETE_AP_CUTOFF_2024 = gql`
+  mutation DeleteApCutoff2024($sno: Float!) {
+    deleteApCutoff2024(sno: $sno) {
+      sno
     }
   }
 `;
