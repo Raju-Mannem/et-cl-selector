@@ -232,6 +232,30 @@ const resolvers = {
         data: args,
       });
     },
+    createApCutoff2023: async (_parent: any, args: any, context: Context) => {
+      return await context.prisma.ap_cutoff_2023.create({
+        data: args.data,
+      });
+    },
+    updateApCutoff2023: async (
+      _parent: any,
+      args: { sno: number; data: any },
+      context: Context
+    ) => {
+      return await context.prisma.ap_cutoff_2023.update({
+        where: { sno: args.sno },
+        data: args.data,
+      });
+    },
+    deleteApCutoff2023: async (
+      _parent: any,
+      args: { sno: number },
+      context: Context
+    ) => {
+      return context.prisma.ap_cutoff_2023.delete({
+        where: { sno: args.sno },
+      });
+    },
   },
   College: {
     courses: async (parent: any, _args: any, context: Context) => {
@@ -246,30 +270,6 @@ const resolvers = {
         where: { institute_code: parent.institute_code },
       });
     },
-  },
-  createApCutoff2023: async (_parent: any, args: any, context: Context) => {
-    return await context.prisma.ap_cutoff_2023.create({
-      data: args.data,
-    });
-  },
-  updateApCutoff2023: async (
-    _parent: any,
-    args: { sno: number; data: any },
-    context: Context
-  ) => {
-    return await context.prisma.ap_cutoff_2023.update({
-      where: { sno: args.sno },
-      data: args.data,
-    });
-  },
-  deleteApCutoff2023: async (
-    _parent: any,
-    args: { sno: number },
-    context: Context
-  ) => {
-    return context.prisma.ap_cutoff_2023.delete({
-      where: { sno: args.sno },
-    });
   },
 };
 export default resolvers;
