@@ -83,7 +83,7 @@ const resolvers = {
         where: { institute_code: args.institute_code },
       });
     },
-    apCutoff2024s: async (
+    apCutoff2023s: async (
       _parent: any,
       args: { limit?: number; offset?: number },
       context: Context
@@ -92,37 +92,37 @@ const resolvers = {
       const offset = args.offset ?? 0;
 
       const [rows, totalCount] = await Promise.all([
-        context.prisma.ap_cutoff_2024.findMany({
+        context.prisma.ap_cutoff_2023.findMany({
           skip: offset,
           take: limit,
           orderBy: { sno: "asc" }, // Or any other ordering you prefer
         }),
-        context.prisma.ap_cutoff_2024.count(),
+        context.prisma.ap_cutoff_2023.count(),
       ]);
 
       return { rows, totalCount };
     },
-    apCutoff2024: async (
+    apCutoff2023: async (
       _parent: any,
       args: { sno: number },
       context: Context
     ) => {
-      return await context.prisma.ap_cutoff_2024.findUnique({
+      return await context.prisma.ap_cutoff_2023.findUnique({
         where: { sno: args.sno },
       });
     },
-    apCutoff2024sByInstCodes: async (
+    apCutoff2023sByInstCodes: async (
       _parent: any,
       args: { inst_codes: string[] },
       context: Context
     ) => {
-      return await context.prisma.ap_cutoff_2024.findMany({
+      return await context.prisma.ap_cutoff_2023.findMany({
         where: {
           inst_code: { in: args.inst_codes },
         },
       });
     },
-    apCutoff2024sByRank: async (
+    apCutoff2023sByRank: async (
       __parent: any,
       args: { filter: any },
       context: Context
@@ -131,7 +131,7 @@ const resolvers = {
         args.filter;
 
       // 1. Fetch all rows for selected districts
-      const rows = await context.prisma.ap_cutoff_2024.findMany({
+      const rows = await context.prisma.ap_cutoff_2023.findMany({
         where: {
           branch_code: { in: branchCodes },
           dist_code: { in: distCodes },
@@ -190,14 +190,14 @@ const resolvers = {
         ),
       }));
     },
-    apCutoff2024sByInstDist: async (
+    apCutoff2023sByInstDist: async (
       __parent: any,
       args: { filter: any },
       context: Context
     ) => {
       const { instCodes, branchCodes, casteColumns, distCodes } = args.filter;
 
-      const rows = await context.prisma.ap_cutoff_2024.findMany({
+      const rows = await context.prisma.ap_cutoff_2023.findMany({
         where: {
           inst_code: { in: instCodes },
           dist_code: { in: distCodes },
@@ -247,27 +247,27 @@ const resolvers = {
       });
     },
   },
-  createApCutoff2024: async (_parent: any, args: any, context: Context) => {
-    return await context.prisma.ap_cutoff_2024.create({
+  createApCutoff2023: async (_parent: any, args: any, context: Context) => {
+    return await context.prisma.ap_cutoff_2023.create({
       data: args.data,
     });
   },
-  updateApCutoff2024: async (
+  updateApCutoff2023: async (
     _parent: any,
     args: { sno: number; data: any },
     context: Context
   ) => {
-    return await context.prisma.ap_cutoff_2024.update({
+    return await context.prisma.ap_cutoff_2023.update({
       where: { sno: args.sno },
       data: args.data,
     });
   },
-  deleteApCutoff2024: async (
+  deleteApCutoff2023: async (
     _parent: any,
     args: { sno: number },
     context: Context
   ) => {
-    return context.prisma.ap_cutoff_2024.delete({
+    return context.prisma.ap_cutoff_2023.delete({
       where: { sno: args.sno },
     });
   },

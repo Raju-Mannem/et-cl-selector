@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Colleges from "@/components/Colleges";
 import College from "@/components/College";
-import Cutoff2024 from "@/components/Cutoff2024";
+import Cutoff2023 from "@/components/Cutoff2023";
 
 const Dashboard = () => {
   const [selectType, setSelectType] = useState<string>("");
@@ -30,10 +30,10 @@ const Dashboard = () => {
         </article>
         <article className="px-2 bg-stone-50 rounded-sm">
           <button
-            onClick={() => handleSelect("cutoff2024")}
+            onClick={() => handleSelect("cutoff2023")}
             className="focus:outline-0"
           >
-            Cutoff 2024
+            Cutoff 2023
           </button>
         </article>
       </section>
@@ -42,7 +42,7 @@ const Dashboard = () => {
       ) : selectType === "colleges" ? (
         <College />
       ) : (
-        <Cutoff2024 />
+        <Cutoff2023 />
       )}
     </main>
   );

@@ -31,7 +31,7 @@ model course {
   college        college @relation(fields: [institute_code], references: [institute_code])
 }
 
-model ap_cutoff_2024 {
+model ap_cutoff_2023 {
   sno            Decimal  @id(map: "ap_cutoff_2025_pkey") @db.Decimal
   inst_code      String?
   institute_name String?

@@ -54,9 +54,9 @@ export const GET_ALL_COLLEGES = gql`
   }
 `;
 
-export const GET_PAGINATED_AP_CUTOFF_2024S = gql`
-  query GetPaginatedApCutoff2024s($limit: Int, $offset: Int) {
-    apCutoff2024s(limit: $limit, offset: $offset) {
+export const GET_PAGINATED_AP_CUTOFF_2023S = gql`
+  query GetPaginatedApCutoff2023s($limit: Int, $offset: Int) {
+    apCutoff2023s(limit: $limit, offset: $offset) {
       rows {
         sno
         inst_code
@@ -92,9 +92,9 @@ export const GET_PAGINATED_AP_CUTOFF_2024S = gql`
   }
 `;
 
-export const GET_AP_CUTOFF_2024 = gql`
-  query GetApCutoff2024($sno: Float!) {
-    apCutoff2024(sno: $sno) {
+export const GET_AP_CUTOFF_2023 = gql`
+  query GetApCutoff2023($sno: Float!) {
+    apCutoff2023(sno: $sno) {
       sno
       inst_code
       institute_name
@@ -129,9 +129,9 @@ export const GET_AP_CUTOFF_2024 = gql`
   }
 `;
 
-export const GET_AP_CUTOFF_2024S_BY_INST_CODES = gql`
-  query GetApCutoff2024sByInstCodes($inst_codes: [String!]!) {
-    apCutoff2024sByInstCodes(inst_codes: $inst_codes) {
+export const GET_AP_CUTOFF_2023S_BY_INST_CODES = gql`
+  query GetApCutoff2023sByInstCodes($inst_codes: [String!]!) {
+    apCutoff2023sByInstCodes(inst_codes: $inst_codes) {
       sno
       inst_code
       institute_name
@@ -164,9 +164,9 @@ export const GET_AP_CUTOFF_2024S_BY_INST_CODES = gql`
   }
 `;
 
-export const GET_AP_CUTOFFS_2024_BY_RANK = gql`
-  query ApCutoff2024sByRank($filter: RankFilterInput!) {
-    apCutoff2024sByRank(filter: $filter) {
+export const GET_AP_CUTOFFS_2023_BY_RANK = gql`
+  query ApCutoff2023sByRank($filter: RankFilterInput!) {
+    apCutoff2023sByRank(filter: $filter) {
       sno
       inst_code
       institute_name
@@ -179,9 +179,9 @@ export const GET_AP_CUTOFFS_2024_BY_RANK = gql`
     }
   }
 `;
-export const GET_AP_CUTOFFS_2024_BY_RANK_DIST = gql`
-  query ApCutoff2024sByInstDist($filter: InstDistFilterInput!) {
-    apCutoff2024sByInstDist(filter: $filter) {
+export const GET_AP_CUTOFFS_2023_BY_RANK_DIST = gql`
+  query ApCutoff2023sByInstDist($filter: InstDistFilterInput!) {
+    apCutoff2023sByInstDist(filter: $filter) {
       sno
       inst_code
       institute_name

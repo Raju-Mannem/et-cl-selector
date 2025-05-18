@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { useLazyQuery } from "@apollo/client";
 import {
-  GET_AP_CUTOFFS_2024_BY_RANK,
-  // GET_AP_CUTOFFS_2024_BY_RANK_DIST,
+  GET_AP_CUTOFFS_2023_BY_RANK,
+  // GET_AP_CUTOFFS_2023_BY_RANK_DIST,
 } from "../graphql/queries";
 import { districtOptions } from "../data/districts";
 import { casteOptions } from "../data/caste";
@@ -18,7 +18,7 @@ interface ApCutoffData {
   inst_code: string;
 }
 
-interface apCutoff2024sPdfData {
+interface apCutoff2023sPdfData {
   sno: number;
   inst_code: string;
   institute_name: string;
@@ -44,7 +44,7 @@ export interface CutoffRow {
   };
 }
 
-const Cutoff2024 = () => {
+const Cutoff2023 = () => {
   const [minRank, setMinRank] = useState("");
   const [maxRank, setMaxRank] = useState("");
   const [selectedCastes, setSelectedCastes] = useState<string[]>([]);
@@ -56,7 +56,7 @@ const Cutoff2024 = () => {
   const [stdCaste, setStdCaste] = useState<string>("");
 
   const [fetchCutoffs, { data, loading, error }] = useLazyQuery(
-    GET_AP_CUTOFFS_2024_BY_RANK,
+    GET_AP_CUTOFFS_2023_BY_RANK,
     { errorPolicy: "all" }
   );
 
@@ -84,7 +84,7 @@ const Cutoff2024 = () => {
       // );
 
       const tableData = data?.tsCutoff2025sByRank?.map(
-        (row: apCutoff2024sPdfData, index: number) => ({
+        (row: apCutoff2023sPdfData, index: number) => ({
           sno: index + 1,
           inst_code: row.inst_code,
           institute_name: row.institute_name,
@@ -783,4 +783,4 @@ const Cutoff2024 = () => {
   );
 };
 
-export default Cutoff2024;
+export default Cutoff2023;

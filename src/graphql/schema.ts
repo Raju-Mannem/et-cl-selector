@@ -23,7 +23,7 @@ type College {
     colleges: [College!]! 
   }
 
-  type ApCutoff2024 {
+  type ApCutoff2023 {
     sno: ID!
     inst_code: String
     institute_name: String
@@ -58,7 +58,7 @@ type College {
     priority: Int
   }
 
-input ApCutoff2024Input {
+input ApCutoff2023Input {
 sno: ID!
 inst_code: String
 institute_name: String
@@ -109,7 +109,7 @@ priority: Int
     distCodes: [String!]
   }
 
-  type ApCutoff2024Dynamic {
+  type ApCutoff2023Dynamic {
     sno: ID!
     inst_code: String
     institute_name: String
@@ -128,11 +128,11 @@ priority: Int
     getCollege(institute_code: String!): College
     getColleges: [College!]!
     getCoursesByInstitute(institute_code: String!): [Course!]!
-    apCutoff2024s(limit: Int = 50, offset: Int = 0): [TsCutoff2024!]!
-    apCutoff2024(sno: Float!): TsCutoff2024
-    apCutoff2024sByInstCodes(inst_codes: [String!]!): [TsCutoff2024!]!
-    apCutoff2024sByRank(filter: RankFilterInput!): [TsCutoff2024Dynamic!]!
-    apCutoff2024sByInstDist(filter: InstDistFilterInput!): [TsCutoff2024Dynamic!]!
+    apCutoff2023s(limit: Int = 50, offset: Int = 0): [ApCutoff2023!]!
+    apCutoff2023(sno: Float!): ApCutoff2023
+    apCutoff2023sByInstCodes(inst_codes: [String!]!): [ApCutoff2023!]!
+    apCutoff2023sByRank(filter: RankFilterInput!): [ApCutoff2023Dynamic!]!
+    apCutoff2023sByInstDist(filter: InstDistFilterInput!): [ApCutoff2023Dynamic!]!
   }
 
   type Mutation {
@@ -156,9 +156,9 @@ priority: Int
       convener_seats: Int!
     ): Course
 
-    createApCutoff2024(data: TsCutoff2024Input!): ApCutoff2024!
-    updateApCutoff2024(sno: Float!, data: ApCutoff2024Input!): ApCutoff2024!
-    deleteApCutoff2024(sno: Float!): ApCutoff2024!
+    createApCutoff2023(data: ApCutoff2023Input!): ApCutoff2023!
+    updateApCutoff2023(sno: Float!, data: ApCutoff2023Input!): ApCutoff2023!
+    deleteApCutoff2023(sno: Float!): ApCutoff2023!
   }
 `;
 export default typeDefs;

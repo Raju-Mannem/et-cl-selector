@@ -62,9 +62,9 @@ export const CREATE_COURSE = gql`
   }
 `;
 
-export const CREATE_AP_CUTOFF_2024 = gql`
-  mutation CreateApCutoff2024($data: ApCutoff2024Input!) {
-    createApCutoff2024(data: $data) {
+export const CREATE_AP_CUTOFF_2023 = gql`
+  mutation CreateApCutoff2023($data: ApCutoff2023Input!) {
+    createApCutoff2023(data: $data) {
       sno
       inst_code
       institute_name
@@ -99,9 +99,9 @@ export const CREATE_AP_CUTOFF_2024 = gql`
   }
 `;
 
-export const UPDATE_AP_CUTOFF_2024 = gql`
-  mutation UpdateApCutoff2024($sno: Float!, $data: ApCutoff2024Input!) {
-    updateApCutoff2024(sno: $sno, data: $data) {
+export const UPDATE_AP_CUTOFF_2023 = gql`
+  mutation UpdateApCutoff2023($sno: Float!, $data: ApCutoff2023Input!) {
+    updateApCutoff2023(sno: $sno, data: $data) {
       sno
       inst_code
       institute_name
@@ -136,9 +136,9 @@ export const UPDATE_AP_CUTOFF_2024 = gql`
   }
 `;
 
-export const DELETE_AP_CUTOFF_2024 = gql`
-  mutation DeleteApCutoff2024($sno: Float!) {
-    deleteApCutoff2024(sno: $sno) {
+export const DELETE_AP_CUTOFF_2023 = gql`
+  mutation DeleteApCutoff2023($sno: Float!) {
+    deleteApCutoff2023(sno: $sno) {
       sno
     }
   }
