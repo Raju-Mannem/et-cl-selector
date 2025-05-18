@@ -100,6 +100,7 @@ priority: Int
     branchCodes: [String!]
     casteColumns: [String!]
     distCodes: [String!]
+    coEdu: Boolean
   }
 
   input InstDistFilterInput{
@@ -107,6 +108,7 @@ priority: Int
     branchCodes: [String!]
     casteColumns: [String!]
     distCodes: [String!]
+    coEdu: Boolean
   }
 
   type ApCutoff2023Dynamic {
