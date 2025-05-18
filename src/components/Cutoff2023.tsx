@@ -63,7 +63,7 @@ const Cutoff2023 = () => {
   // const [
   //   fetchRowsByInstDistCodes,
   //   { data: rowsData, loading: rowsLoading, error: rowsError },
-  // ] = useLazyQuery(GET_TS_CUTOFFS_2025_BY_RANK_DIST, { errorPolicy: "all" });
+  // ] = useLazyQuery(GET_TS_CUTOFFS_2023_BY_RANK_DIST, { errorPolicy: "all" });
 
   const handlePDF = () => {
     if (!stdName) {
@@ -83,7 +83,7 @@ const Cutoff2023 = () => {
       //   16
       // );
 
-      const tableData = data?.tsCutoff2025sByRank?.map(
+      const tableData = data?.apCutoff2023sByRank?.map(
         (row: apCutoff2023sPdfData, index: number) => ({
           sno: index + 1,
           inst_code: row.inst_code,
@@ -207,11 +207,11 @@ const Cutoff2023 = () => {
   };
 
   // useEffect(() => {
-  //   if (data && data.tsCutoff2025sByRank.length) {
-  //     const uniqueInstCodes = data.tsCutoff2025sByRank
-  //       .map((item: TsCutoffData) => item.inst_code)
+  //   if (data && data.apCutoff2023sByRank.length) {
+  //     const uniqueInstCodes = data.apCutoff2023sByRank
+  //       .map((item: apCutoffData) => item.inst_code)
   //       .filter(
-  //         (value: TsCutoffData, index: number, self: TsCutoffData[]) =>
+  //         (value: apCutoffData, index: number, self: apCutoffData[]) =>
   //           self.indexOf(value) === index
   //       );
 
@@ -685,12 +685,12 @@ const Cutoff2023 = () => {
               Error: {rowsError.message}
             </div>
           )} */}
-          {data?.tsCutoff2025sByRank?.length === 0 && (
+          {data?.apCutoff2023sByRank?.length === 0 && (
             <div className="text-red-500 text-center py-12 border-t text-sm">
               No rows found for the selected institute codes.
             </div>
           )}
-          {data?.tsCutoff2025sByRank?.length > 0 ? (
+          {data?.apCutoff2023sByRank?.length > 0 ? (
             <div className="overflow-x-auto mt-6">
               <table className="min-w-full table-auto bg-white border border-collapse text-[4px] sm:text-[10px] font-sans">
                 <thead className="bg-emerald-700 text-neutral-100 font-extrabold">
@@ -727,7 +727,7 @@ const Cutoff2023 = () => {
                   </tr>
                 </thead>
                 <tbody className="text-neutral-900">
-                  {data.tsCutoff2025sByRank.map(
+                  {data.apCutoff2023sByRank.map(
                     (row: CutoffRow, index: number) => (
                       <tr
                         key={row.sno}
