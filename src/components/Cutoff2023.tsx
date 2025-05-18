@@ -594,7 +594,7 @@ const Cutoff2023 = () => {
           <div className="basis-2/12 mt-2 sm:mt-6">
             <details className="group relative overflow-hidden rounded border border-gray-300 shadow-sm bg-indigo-50">
               <summary className="flex items-center justify-between gap-2 p-2 sm:p-3 text-gray-700 transition-colors hover:text-gray-900 [&::-webkit-details-marker]:hidden">
-                <span className="font-medium"> Co-Education </span>
+                <span className="font-medium"> Education </span>
 
                 <span className="transition-transform group-open:-rotate-180">
                   <svg
@@ -660,7 +660,7 @@ const Cutoff2023 = () => {
         </form>
       </article>
       <article className="w-full h-full mt-20">
-        <div className="mt-8 flex gap-4 ">
+        <div className="mt-8 flex gap-4 flex-wrap items-start">
           <span>
             <label className="block text-gray-700 font-medium mb-1">
               Student Name
