@@ -246,6 +246,7 @@ const Cutoff2023 = () => {
 
   return (
     <section className="flex justify-center items-center flex-col overflow-x-auto py-2 sm:py-4 sm:px-8 text-[6px] sm:text-[12px] font-sans">
+      <strong className="bg-indigo-200 text-sm text-white w-full text-center py-2 mb-2 rounded">2023 cutoff</strong>
       <article className="w-full h-full">
         <form
           className="flex justify-start flex-wrap items-start gap-2"
