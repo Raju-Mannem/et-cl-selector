@@ -65,7 +65,7 @@ const Cutoff2024 = () => {
   // const [
   //   fetchRowsByInstDistCodes,
   //   { data: rowsData, loading: rowsLoading, error: rowsError },
-  // ] = useLazyQuery(GET_TS_CUTOFFS_2023_BY_RANK_DIST, { errorPolicy: "all" });
+  // ] = useLazyQuery(GET_TS_CUTOFFS_2024_BY_RANK_DIST, { errorPolicy: "all" });
 
   const handlePDF = () => {
     if (!stdName) {
@@ -210,8 +210,8 @@ const Cutoff2024 = () => {
   };
 
   useEffect(() => {
-    if (data?.apCutoff2023sByRank) {
-      setResult(data.apCutoff2023sByRank);
+    if (data?.apCutoff2024sByRank) {
+      setResult(data.apCutoff2024sByRank);
     }
   }, [data]);
 
@@ -242,8 +242,8 @@ const Cutoff2024 = () => {
   };
 
   // useEffect(() => {
-  //   if (data && data.apCutoff2023sByRank.length) {
-  //     const uniqueInstCodes = data.apCutoff2023sByRank
+  //   if (data && data.apCutoff2024sByRank.length) {
+  //     const uniqueInstCodes = data.apCutoff2024sByRank
   //       .map((item: apCutoffData) => item.inst_code)
   //       .filter(
   //         (value: apCutoffData, index: number, self: apCutoffData[]) =>
@@ -779,7 +779,7 @@ const Cutoff2024 = () => {
               Error: {rowsError.message}
             </div>
           )} */}
-          {data?.apCutoff2023sByRank?.length === 0 && (
+          {data?.apCutoff2024sByRank?.length === 0 && (
             <div className="text-red-500 text-center py-12 border-t text-sm">
               No rows found for the selected institute codes.
             </div>

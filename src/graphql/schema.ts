@@ -169,9 +169,7 @@ priority: Int
     co_education: String
     dynamicCastes: JSON
   }
-
   scalar JSON
-
 
   type Query {
     getCollege(institute_code: String!): College
@@ -181,7 +179,7 @@ priority: Int
     apCutoff2023(sno: Float!): ApCutoff2023
     apCutoff2023sByInstCodes(inst_codes: [String!]!): [ApCutoff2023!]!
     apCutoff2023sByRank(filter: RankFilterInput!): [ApCutoff2023Dynamic!]!
-    apCutoff2024sByRank(filter: RankFilterInput!): [ApCutoff2023Dynamic!]!
+    apCutoff2024sByRank(filter: RankFilterInput!): [ApCutoff2024Dynamic!]!
     apCutoff2023sByInstDist(filter: InstDistFilterInput!): [ApCutoff2023Dynamic!]!
   }
 
