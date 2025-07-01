@@ -18,7 +18,7 @@ interface ApCutoffData {
   inst_code: string;
 }
 
-interface apCutoff2023sPdfData {
+interface apCutoff2024sPdfData {
   sno: number;
   inst_code: string;
   institute_name: string;
