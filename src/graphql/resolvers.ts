@@ -6,11 +6,9 @@ function toNumber(
   val: Decimal | number | string | null | undefined
 ): number | null {
   if (val === null || val === undefined) return null;
-  // If already a number, return as is
   if (typeof val === "number") {
     return isFinite(val) ? val : null;
   }
-  // If Prisma.Decimal, use its toNumber method
   if (
     typeof val === "object" &&
     val !== null &&
@@ -24,12 +22,10 @@ function toNumber(
       return null;
     }
   }
-  // If a string, attempt to parse as number
   if (typeof val === "string") {
     const num = Number(val);
     return isFinite(num) ? num : null;
   }
-  // Fallback: not a valid number
   return null;
 }
 
@@ -138,6 +134,79 @@ const resolvers = {
 
       // 1. Fetch all rows for selected districts
       const rows = await context.prisma.ap_cutoff_2023.findMany({
+        where: whereClause,
+        orderBy: {
+          priority: "asc",
+        },
+      });
+
+      // console.log("Rows from DB:", rows.length);
+      // if (rows.length > 0) {
+      //   console.log("Sample row:", rows[0]);
+      //   console.log("Caste columns requested:", casteColumns);
+      //   console.log("Min/Max rank:", minRank, maxRank);
+      // }
+
+      // 2. Filter rows: ALL selected caste columns must be within [minRank, maxRank]
+      const filteredRows = rows.filter((row) =>
+        casteColumns.every((col: any) => {
+          const rawValue = row[col as keyof typeof row];
+          if (rawValue === null || rawValue === undefined) return false;
+          const value = toNumber(rawValue);
+          return value! >= minRank && value! <= maxRank;
+        })
+      );
+      // console.log('Filtered rows:', filteredRows.length);
+
+      // ✅ 3. Create a branch code order map for fast lookup
+      const branchOrderMap = new Map<string, number>(
+        branchCodes.map((code: string, index: number) => [code, index])
+      );
+
+      const sortedRows = filteredRows.sort((a, b) => {
+        // priority is Int? (number | null)
+        const priorityA = a.priority ?? 0;
+        const priorityB = b.priority ?? 0;
+        const priorityDiff = priorityA - priorityB;
+        if (priorityDiff !== 0) return priorityDiff;
+        const branchAOrder =
+          branchOrderMap.get(a.branch_code ?? "") ?? Number.MAX_SAFE_INTEGER;
+        const branchBOrder =
+          branchOrderMap.get(b.branch_code ?? "") ?? Number.MAX_SAFE_INTEGER;
+        return branchAOrder - branchBOrder;
+      });
+
+      // 4. Map to result
+      return sortedRows.map((row) => ({
+        sno: row.sno,
+        inst_code: row.inst_code,
+        institute_name: row.institute_name,
+        place: row.place,
+        dist_code: row.dist_code,
+        branch_code: row.branch_code,
+        branch_name: row.branch_name,
+        co_education: row.co_education,
+        dynamicCastes: Object.fromEntries(
+          casteColumns.map((col: any) => [col, row[col as keyof typeof row]])
+        ),
+      }));
+    },
+    apCutoff2024sByRank: async (
+      __parent: any,
+      args: { filter: any },
+      context: Context
+    ) => {
+      const { minRank, maxRank, branchCodes, casteColumns, distCodes, coEdu } =
+        args.filter;
+
+        const whereClause: any = {
+          branch_code: { in: branchCodes },
+          dist_code: { in: distCodes },
+          ...(coEdu && { co_education: "GIRLS" }),
+        };
+
+      // 1. Fetch all rows for selected districts
+      const rows = await context.prisma.ap_cutoff_2024.findMany({
         where: whereClause,
         orderBy: {
           priority: "asc",
