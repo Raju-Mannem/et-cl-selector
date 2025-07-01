@@ -42,6 +42,8 @@ export interface CutoffRow {
   dynamicCastes?: {
     [key: string]: number | null;
   };
+  college_type: string;
+  a_reg: string;
 }
 
 const Cutoff2024 = () => {
@@ -512,7 +514,6 @@ const Cutoff2024 = () => {
             <details className="group relative overflow-hidden rounded border border-gray-300 shadow-sm bg-indigo-50">
               <summary className="flex items-center justify-between gap-2 p-2 sm:p-3 text-gray-700 transition-colors hover:text-gray-900 [&::-webkit-details-marker]:hidden">
                 <span className="font-medium"> District </span>
-
                 <span className="transition-transform group-open:-rotate-180">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -818,6 +819,9 @@ const Cutoff2024 = () => {
                         {col}
                       </th>
                     ))}
+                    <th className="border border-gray-300 pl-2 py-2 w-xs  text-left py-2 break-all">
+                      A Region
+                    </th>
                     <th className="border border-gray-300 text-center py-2 w-xs">
                       Move
                     </th>
@@ -830,7 +834,10 @@ const Cutoff2024 = () => {
                         key={row.sno}
                         className={`hover:bg-stone-50 ${
                           row.co_education == "GIRLS" && "text-red-400"
-                        } ${row.inst_code == "JNTKSS" && "bg-emerald-600"} hover:text-blue-500 h-4 ${
+                        } 
+                        ${row.inst_code == "JNTKSS" && "bg-emerald-600"} 
+                        ${row.college_type == "PU" && "bg-rose-600 text-white"}
+                        hover:text-blue-500 h-4 ${
                           index % 2 != 0 ? "bg-gray-100" : ""
                         }`}
                       >
@@ -879,6 +886,9 @@ const Cutoff2024 = () => {
                             {row.dynamicCastes?.[col] ?? "-"}
                           </td>
                         ))}
+                        <td className="border border-gray-300 py-2 text-center max-w-min">
+                          {row.a_reg}
+                        </td>
                         <td className="border border-gray-300 py-2 text-center max-w-min">
                           <span className="flex items-center justify-center flex-col gap-1">
                       <button 

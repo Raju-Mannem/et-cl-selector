@@ -189,6 +189,8 @@ const resolvers = {
         dynamicCastes: Object.fromEntries(
           casteColumns.map((col: any) => [col, row[col as keyof typeof row]])
         ),
+        college_type: row.college_type,
+        a_reg: row.a_reg,
       }));
     },
     apCutoff2024sByRank: async (
@@ -262,6 +264,8 @@ const resolvers = {
         dynamicCastes: Object.fromEntries(
           casteColumns.map((col: any) => [col, row[col as keyof typeof row]])
         ),
+        college_type: row.college_type,
+        a_reg: row.a_reg,
       }));
     },
     apCutoff2023sByInstDist: async (

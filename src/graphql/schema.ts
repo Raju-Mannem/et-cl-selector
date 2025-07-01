@@ -156,6 +156,8 @@ priority: Int
     branch_code: String
     co_education: String
     dynamicCastes: JSON
+    college_type: String
+    a_reg: String
   }
 
   type ApCutoff2024Dynamic {
@@ -168,6 +170,8 @@ priority: Int
     branch_code: String
     co_education: String
     dynamicCastes: JSON
+    college_type: String
+    a_reg: String
   }
   scalar JSON
 

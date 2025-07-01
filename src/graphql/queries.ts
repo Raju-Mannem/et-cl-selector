@@ -176,6 +176,8 @@ export const GET_AP_CUTOFFS_2023_BY_RANK = gql`
       place
       dynamicCastes
       co_education
+      college_type,
+      a_reg
     }
   }
 `;
@@ -191,6 +193,8 @@ export const GET_AP_CUTOFFS_2024_BY_RANK = gql`
       place
       dynamicCastes
       co_education
+      college_type,
+      a_reg
     }
   }
 `;
