@@ -181,7 +181,7 @@ export const GET_AP_CUTOFFS_2023_BY_RANK = gql`
 `;
 export const GET_AP_CUTOFFS_2024_BY_RANK = gql`
   query ApCutoff2024sByRank($filter: RankFilterInput!) {
-    apCutoff2023sByRank(filter: $filter) {
+    apCutoff2024sByRank(filter: $filter) {
       sno
       inst_code
       institute_name
