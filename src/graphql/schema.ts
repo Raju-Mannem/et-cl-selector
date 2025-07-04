@@ -136,6 +136,7 @@ priority: Int
     casteColumns: [String!]
     distCodes: [String!]
     coEdu: Boolean
+    collegeType: [String!]
   }
 
   input InstDistFilterInput{

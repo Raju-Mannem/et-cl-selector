@@ -198,13 +198,14 @@ const resolvers = {
       args: { filter: any },
       context: Context
     ) => {
-      const { minRank, maxRank, branchCodes, casteColumns, distCodes, coEdu } =
+      const { minRank, maxRank, branchCodes, casteColumns, distCodes, coEdu, collegeType } =
         args.filter;
 
         const whereClause: any = {
           branch_code: { in: branchCodes },
           dist_code: { in: distCodes },
           ...(coEdu && { co_education: "GIRLS" }),
+          ...(collegeType && { college_type: { in: collegeType } }),
         };
 
       // 1. Fetch all rows for selected districts

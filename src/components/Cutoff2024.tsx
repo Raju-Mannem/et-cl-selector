@@ -5,12 +5,13 @@ import {
   GET_AP_CUTOFFS_2024_BY_RANK,
   // GET_AP_CUTOFFS_2024_BY_RANK_DIST,
 } from "../graphql/queries";
-import { districtOptions } from "../data/districts";
-import { casteOptions } from "../data/caste";
-import { branchOptions } from "../data/branch";
 import { jsPDF } from "jspdf";
 import { autoTable } from "jspdf-autotable";
 import { toast } from "sonner";
+import { districtOptions } from "../data/districts";
+import { casteOptions } from "../data/caste";
+import { branchOptions } from "../data/branch";
+import {clgTypeOptions} from "../data/clgtype"
 
 interface ApCutoffData {
   __typename: string;
@@ -52,6 +53,7 @@ const Cutoff2024 = () => {
   const [selectedCastes, setSelectedCastes] = useState<string[]>([]);
   const [selectedBranches, setSelectedBranches] = useState<string[]>([]);
   const [selectedDistricts, setSelectedDistricts] = useState<string[]>([]);
+  const [collegeType, setCollegeType] = useState<string[]>([]);
   // const [instCodes, setInstCodes] = useState<string[]>([]);
   const [stdName, setStdName] = useState<string>("");
   const [stdRank, setStdRank] = useState<string>("");
@@ -194,8 +196,24 @@ const Cutoff2024 = () => {
       selectedDistricts.length < 1
     ) {
       toast.error(`Invalid details, Please check details`);
-    } else {
+    } else if(collegeType.length>0) {
       const variables = {
+        filter: {
+          minRank: Number(minRank),
+          maxRank: Number(maxRank),
+          casteColumns: selectedCastes,
+          branchCodes: selectedBranches,
+          distCodes: selectedDistricts,
+          coEdu: coEdu,
+          collegeType
+        },
+      };
+
+      // console.log("Submitting filter:", variables);
+      fetchCutoffs({ variables });
+    }
+    else {
+       const variables = {
         filter: {
           minRank: Number(minRank),
           maxRank: Number(maxRank),
@@ -333,7 +351,6 @@ const Cutoff2024 = () => {
                     {" "}
                     {selectedBranches.length}{" "}
                   </span>
-
                   <button
                     type="button"
                     className="text-gray-700 underline transition-colors hover:text-gray-900"
@@ -344,10 +361,8 @@ const Cutoff2024 = () => {
                     Reset
                   </button>
                 </div>
-
                 <fieldset className="p-3">
                   <legend className="sr-only">Checkboxes</legend>
-
                   <div className="flex flex-col items-start gap-3 max-h-24 overflow-y-auto pr-2">
                     <label
                       htmlFor="all"
@@ -413,7 +428,6 @@ const Cutoff2024 = () => {
             <details className="group relative overflow-hidden rounded border border-gray-300 shadow-sm bg-indigo-50">
               <summary className="flex items-center justify-between gap-2 p-2 sm:p-3  text-gray-700 transition-colors hover:text-gray-900 [&::-webkit-details-marker]:hidden">
                 <span className="font-medium"> Caste </span>
-
                 <span className="transition-transform group-open:-rotate-180">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -431,14 +445,12 @@ const Cutoff2024 = () => {
                   </svg>
                 </span>
               </summary>
-
               <div className="divide-y divide-gray-300 border-t border-gray-300 bg-white">
                 <div className="flex items-center justify-between px-3 py-2">
                   <span className="text-gray-700">
                     {" "}
                     {selectedCastes.length}{" "}
                   </span>
-
                   <button
                     type="button"
                     className="text-gray-700 underline transition-colors hover:text-gray-900"
@@ -449,7 +461,6 @@ const Cutoff2024 = () => {
                     Reset
                   </button>
                 </div>
-
                 <fieldset className="p-3">
                   <legend className="sr-only">Checkboxes</legend>
 
@@ -599,6 +610,111 @@ const Cutoff2024 = () => {
                                 ? [...prevState, value]
                                 : prevState.filter(
                                     (district) => district !== value
+                                  )
+                            );
+                          }}
+                        />
+
+                        <span className="font-medium text-gray-700">
+                          {" "}
+                          {opt.label}{" "}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+              </div>
+            </details>
+          </div>
+          <div className="basis-2/12  mt-2 sm:mt-6">
+            <details className="group relative overflow-hidden rounded border border-gray-300 shadow-sm bg-indigo-50">
+              <summary className="flex items-center justify-between gap-2 p-2 sm:p-3 text-gray-700 transition-colors hover:text-gray-900 [&::-webkit-details-marker]:hidden">
+                <span className="font-medium"> College Type </span>
+                <span className="transition-transform group-open:-rotate-180">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    className="size-2 sm:size-4"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                    />
+                  </svg>
+                </span>
+              </summary>
+
+              <div className="divide-y divide-gray-300 border-t border-gray-300 bg-white">
+                <div className="flex items-center justify-between px-3 py-2">
+                  <span className="text-gray-700">
+                    {" "}
+                    {collegeType.length}{" "}
+                  </span>
+
+                  <button
+                    type="button"
+                    className="text-gray-700 underline transition-colors hover:text-gray-900"
+                    onClick={() => {
+                      setCollegeType([]);
+                    }}
+                  >
+                    Reset
+                  </button>
+                </div>
+
+                <fieldset className="p-3">
+                  <legend className="sr-only">Checkboxes</legend>
+                  <div className="flex flex-col items-start gap-3 max-h-24 overflow-y-auto pr-2">
+                    <label
+                      htmlFor="all"
+                      className="inline-flex items-center gap-2 sm:gap-3"
+                    >
+                      <input
+                        type="checkbox"
+                        className="size-2 sm:size-5 rounded border-gray-300 shadow-sm"
+                        checked={
+                          collegeType.length === clgTypeOptions.length
+                        }
+                        onChange={() => {
+                          if (
+                            collegeType.length === clgTypeOptions.length
+                          ) {
+                            // Deselect all
+                            setCollegeType([]);
+                          } else {
+                            // Select all
+                            setCollegeType(
+                              clgTypeOptions.map((opt) => opt.value)
+                            );
+                          }
+                        }}
+                      />
+
+                      <span className="font-medium text-gray-700"> All </span>
+                    </label>
+
+                    {clgTypeOptions.map((opt) => (
+                      <label
+                        htmlFor="Option"
+                        key={opt.value}
+                        className="inline-flex items-center gap-2 sm:gap-3"
+                      >
+                        <input
+                          type="checkbox"
+                          className="size-2 sm:size-5 rounded border-gray-300 shadow-sm"
+                          value={opt.value}
+                          checked={collegeType.includes(opt.value)}
+                          onChange={(e) => {
+                            const { value, checked } = e.target;
+                            setCollegeType((prevState) =>
+                              checked
+                                ? [...prevState, value]
+                                : prevState.filter(
+                                    (clgType) => clgType !== value
                                   )
                             );
                           }}
@@ -834,9 +950,9 @@ const Cutoff2024 = () => {
                         key={row.sno}
                         className={`hover:bg-stone-50 ${
                           row.co_education == "GIRLS" && "text-red-400"
-                        } 
-                        ${row.inst_code == "JNTKSS" && "bg-emerald-600"} 
+                        }
                         ${row.college_type == "PU" && "bg-rose-600 text-white"}
+                        ${row.inst_code == "JNTKSS" && "bg-emerald-600"} 
                         hover:text-blue-500 h-4 ${
                           index % 2 != 0 ? "bg-gray-100" : ""
                         }`}
