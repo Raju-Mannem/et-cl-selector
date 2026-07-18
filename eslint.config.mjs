@@ -9,15 +9,15 @@ const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
-const eslintConfig = [
+export default [
   ...compat.config({
-    extends: ['next'],
+    extends: ["next"],
     rules: {
-      'react/no-unescaped-entities': 'off',
-      '@next/next/no-page-custom-font': 'off',
-      'graphql/**' : 'off'
+      "react/no-unescaped-entities": "off",
+      "@next/next/no-page-custom-font": "off",
     },
   }),
+  {
+    ignores: ["src/graphql/**"],
+  },
 ];
-
-export default eslintConfig;
