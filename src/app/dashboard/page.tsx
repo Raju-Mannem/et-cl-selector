@@ -4,6 +4,7 @@ import Colleges from "@/components/Colleges";
 import College from "@/components/College";
 import Cutoff2023 from "@/components/Cutoff2023";
 import Cutoff2024 from "@/components/Cutoff2024";
+import Cutoff2025 from "@/components/Cutoff2025";
 
 const Dashboard = () => {
   const [selectType, setSelectType] = useState<string>("");
@@ -45,6 +46,14 @@ const Dashboard = () => {
             Cutoff 2024
           </button>
         </article>
+        <article className="px-2 bg-stone-50 rounded-sm">
+          <button
+            onClick={() => handleSelect("cutoff2025")}
+            className="focus:outline-0"
+          >
+            Cutoff 2025
+          </button>
+        </article>
       </section>
       {selectType === "courses" ? (
         <Colleges />
@@ -52,8 +61,10 @@ const Dashboard = () => {
         <College />
       ) : selectType === "cutoff2023" ? (
         <Cutoff2023 />
-      ) : (
+      ) : selectType === "cutoff2024" ? (
         <Cutoff2024 />
+      ) : (
+        <Cutoff2025 />
       )}
     </main>
   );

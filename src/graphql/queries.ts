@@ -198,6 +198,23 @@ export const GET_AP_CUTOFFS_2024_BY_RANK = gql`
     }
   }
 `;
+export const GET_AP_CUTOFFS_2025_BY_RANK = gql`
+  query ApCutoff2025sByRank($filter: RankFilterInput!) {
+    apCutoff2025sByRank(filter: $filter) {
+      sno
+      inst_code
+      inst_name
+      branch_code
+      branch_name
+      dist_code
+      dynamicCastes
+      type,
+      local_area,
+      inst_reg,
+      priority
+    }
+  }
+`;
 export const GET_AP_CUTOFFS_2023_BY_RANK_DIST = gql`
   query ApCutoff2023sByInstDist($filter: InstDistFilterInput!) {
     apCutoff2023sByInstDist(filter: $filter) {

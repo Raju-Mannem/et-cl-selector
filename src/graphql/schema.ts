@@ -132,6 +132,7 @@ priority: Int
   input RankFilterInput {
     minRank: Int!
     maxRank: Int!
+    instituteNames: [String]
     branchCodes: [String!]
     casteColumns: [String!]
     distCodes: [String!]
@@ -174,6 +175,22 @@ priority: Int
     college_type: String
     a_reg: String
   }
+
+  type ApCutoff2025Dynamic {
+    sno: ID!
+    inst_code: String
+    inst_name: String
+    branch_name: String
+    branch_code: String
+    co_education: String
+    dynamicCastes: JSON
+    type: String
+    dist_code: String
+    local_area: String
+    inst_reg: String
+    priority: Int
+  }
+
   scalar JSON
 
   type Query {
@@ -185,6 +202,7 @@ priority: Int
     apCutoff2023sByInstCodes(inst_codes: [String!]!): [ApCutoff2023!]!
     apCutoff2023sByRank(filter: RankFilterInput!): [ApCutoff2023Dynamic!]!
     apCutoff2024sByRank(filter: RankFilterInput!): [ApCutoff2024Dynamic!]!
+    apCutoff2025sByRank(filter: RankFilterInput!): [ApCutoff2025Dynamic!]!
     apCutoff2023sByInstDist(filter: InstDistFilterInput!): [ApCutoff2023Dynamic!]!
   }
 

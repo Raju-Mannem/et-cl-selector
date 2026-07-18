@@ -269,6 +269,81 @@ const resolvers = {
         a_reg: row.a_reg,
       }));
     },
+    apCutoff2025sByRank: async (
+      __parent: any,
+      args: { filter: any },
+      context: Context
+    ) => {
+      const { minRank, maxRank, instituteNames, branchCodes, casteColumns, distCodes, collegeType } =
+        args.filter;
+
+        const whereClause: any = {
+          branch_code: { in: branchCodes },
+          dist_code: { in: distCodes },
+          inst_name: { in: instituteNames },
+          ...(collegeType && { type: { in: collegeType } }),
+        };
+
+      // 1. Fetch all rows for selected districts
+      const rows = await context.prisma.ap_cutoff_2025.findMany({
+        where: whereClause,
+        orderBy: {
+          priority: "asc",
+        },
+      });
+
+      // console.log("Rows from DB:", rows.length);
+      // if (rows.length > 0) {
+      //   console.log("Sample row:", rows[0]);
+      //   console.log("Caste columns requested:", casteColumns);
+      //   console.log("Min/Max rank:", minRank, maxRank);
+      // }
+
+      // 2. Filter rows: ALL selected caste columns must be within [minRank, maxRank]
+      const filteredRows = rows.filter((row) =>
+        casteColumns.every((col: any) => {
+          const rawValue = row[col as keyof typeof row];
+          if (rawValue === null || rawValue === undefined) return false;
+          const value = toNumber(rawValue);
+          return value! >= minRank && value! <= maxRank;
+        })
+      );
+      // console.log('Filtered rows:', filteredRows.length);
+
+      // ✅ 3. Create a branch code order map for fast lookup
+      const branchOrderMap = new Map<string, number>(
+        branchCodes.map((code: string, index: number) => [code, index])
+      );
+
+      const sortedRows = filteredRows.sort((a, b) => {
+        // priority is Int? (number | null)
+        const priorityA = a.priority ?? 0;
+        const priorityB = b.priority ?? 0;
+        const priorityDiff = priorityA - priorityB;
+        if (priorityDiff !== 0) return priorityDiff;
+        const branchAOrder =
+          branchOrderMap.get(a.branch_code ?? "") ?? Number.MAX_SAFE_INTEGER;
+        const branchBOrder =
+          branchOrderMap.get(b.branch_code ?? "") ?? Number.MAX_SAFE_INTEGER;
+        return branchAOrder - branchBOrder;
+      });
+      // 4. Map to result
+      return sortedRows.map((row) => ({
+        sno: row.sno,
+        inst_code: row.inst_code,
+        inst_name: row.inst_name,
+        dist_code: row.dist_code,
+        branch_code: row.branch_code,
+        branch_name: row.branch_name,
+        dynamicCastes: Object.fromEntries(
+          casteColumns.map((col: any) => [col, row[col as keyof typeof row]])
+        ),
+        college_type: row.type,
+        local_area: row.local_area,
+        inst_reg: row.inst_reg,
+        priority: row.priority
+      }));
+    },
     apCutoff2023sByInstDist: async (
       __parent: any,
       args: { filter: any },

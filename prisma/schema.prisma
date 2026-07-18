@@ -67,16 +67,6 @@ model ap_cutoff_2023 {
   branch_name    String?
 }
 
-model ap24_branches {
-  branch_code String  @id
-  branch_name String?
-}
-
-model ap24_priority {
-  inst_code String @id
-  priority  Int?
-}
-
 model ap_cutoff_2024 {
   sno            Decimal  @id @db.Decimal
   inst_code      String?
@@ -111,4 +101,45 @@ model ap_cutoff_2024 {
   a_reg          String?
   priority       Int?
   branch_name    String?
+}
+
+model ap_cutoff_2025 {
+  sno          Int     @id(map: "ap_cutoff_2025_pkey1")
+  inst_code    String?
+  inst_name    String?
+  type         String?
+  inst_reg     String?
+  dist_code    String?
+  local_area   String?
+  branch_code  String?
+  oc_boys      Int?
+  oc_girls     Int?
+  sc1_boys     Int?
+  sc1_girls    Int?
+  sc2_boys     Int?
+  sc2_girls    Int?
+  sc3_boys     Int?
+  sc3_girls    Int?
+  st_boys      Int?
+  st_girls     Int?
+  bca_boys     Int?
+  bca_girls    Int?
+  bcb_boys     Int?
+  bcb_girls    Int?
+  bcc_boys     Int?
+  bcc_girls    Int?
+  bcd_boys     Int?
+  bcd_girls    Int?
+  bce_boys     Int?
+  bce_girls    Int?
+  oc_ews_boys  Int?
+  oc_ews_girls Int?
+  priority     Int?
+  branch_name  String?
+}
+
+model courses2025 {
+  sno         Int     @id @default(autoincrement())
+  branch_code String?
+  branch_name String?
 }
