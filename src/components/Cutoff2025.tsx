@@ -6,11 +6,12 @@ import { districtOptions } from "../data/districts";
 import { casteOptions2025 } from "../data/caste";
 import { branchOptions } from "../data/branch";
 import { instituteOptions } from "../data/institute";
-import { clgTypeOptions } from "../data/clgtype"
+import { clgTypeOptions } from "../data/clgtype";
 import { jsPDF } from "jspdf";
 import { autoTable } from "jspdf-autotable";
 import { toast } from "sonner";
 import SearchableMultiSelect from "./SearchableMultiSelect";
+import { useMemo } from "react";
 
 // interface apCutoffData {
 //   __typename: string;
@@ -37,7 +38,7 @@ export interface CutoffRow {
   branch_name: string;
   dist_code: string;
   local_area: string;
-  collegeType: string;
+  college_type: string;
   inst_reg: string;
   priority: number;
   dynamicCastes?: {
@@ -65,11 +66,20 @@ const Cutoff2025 = () => {
   const [selectedBranches, setSelectedBranches] = useState<string[]>([]);
   const [selectedDistricts, setSelectedDistricts] = useState<string[]>([]);
   const [selectedInstitutes, setSelectedInstitutes] = useState<string[]>([]);
-  const [collegeType, setCollegeType ] = useState<string[]>([]);
+  const [collegeType, setCollegeType] = useState<string[]>([]);
   // const [instCodes, setInstCodes] = useState<string[]>([]);
-  const [stdName, setStdName] = useState<string>("");
-  const [stdRank, setStdRank] = useState<string>("");
-  const [stdCaste, setStdCaste] = useState<string>("");
+  const [studentInfo, setStudentInfo] = useState({
+    student_name: "",
+    student_rank: "",
+    student_caste: "",
+  });
+
+  const [selectedStudentDetails, setSelectedStudentDetails] = useState([
+    "student_name",
+    "student_rank",
+    "student_caste",
+  ]);
+
   const [result, setResult] = useState<CutoffRow[]>([]);
 
   const [selectedColumns, setSelectedColumns] = useState<ColumnKey[]>([
@@ -85,19 +95,39 @@ const Cutoff2025 = () => {
     max: "",
   });
 
-  const baseColumns: { label: string; value: ColumnKey }[] = [
+  const studentFields = [
+    {
+      key: "student_name",
+      label: "Student Name",
+      type: "text",
+      placeholder: "Student Name",
+    },
+    {
+      key: "student_rank",
+      label: "Student Rank",
+      type: "number",
+      placeholder: "Rank",
+    },
+    {
+      key: "student_caste",
+      label: "Student Caste",
+      type: "text",
+      placeholder: "Caste",
+    },
+  ];
+
+  const pdfSelectableColumns = [
     { label: "S.NO", value: "sno" },
     { label: "College Code", value: "inst_code" },
     { label: "College Name", value: "inst_name" },
     { label: "Branch Code", value: "branch_code" },
     { label: "Branch Name", value: "branch_name" },
     { label: "District Code", value: "dist_code" },
-    { label: "Place", value: "place" },
+    { label: "Local Area", value: "local_area" },
+    { label: "Inst Reg", value: "inst_reg" },
+    { label: "College Type", value: "college_type" },
     { label: "Priority", value: "priority" },
-  ];
 
-  const pdfSelectableColumns = [
-    ...baseColumns,
     ...selectedCastes.map((caste) => ({
       label: caste,
       value: caste,
@@ -109,11 +139,44 @@ const Cutoff2025 = () => {
     { errorPolicy: "all" },
   );
 
+  useEffect(() => {
+    if (data?.apCutoff2025sByRank) {
+      setResult(data.apCutoff2025sByRank);
+    }
+  }, [data]);
+
+  const duplicateKeys = useMemo(() => {
+    const counts = new Map<string, number>();
+
+    result.forEach((row) => {
+      const key = `${row.inst_code}-${row.branch_code}`;
+      counts.set(key, (counts.get(key) || 0) + 1);
+    });
+
+    return counts;
+  }, [result]);
+
+  const toggleStudentDetail = (key: string) => {
+    setSelectedStudentDetails((prev) =>
+      prev.includes(key) ? prev.filter((x) => x !== key) : [...prev, key],
+    );
+  };
+
+  const handleStudentChange = (
+    key: keyof typeof studentInfo,
+    value: string,
+  ) => {
+    setStudentInfo((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
   const handlePDF = () => {
     if (selectedColumns.length === 0) {
       toast.error("Please select at least one column");
       return;
-    } else if (!stdName) {
+    } else if (!studentInfo.student_name) {
       toast.error("invalid details");
     } else {
       const doc = new jsPDF();
@@ -134,29 +197,33 @@ const Cutoff2025 = () => {
         selectedColumns.includes(c.value),
       );
 
-      const tableData = result?.map((row: CutoffRow, index: number) => {
-        const newRow: any = {};
+      const tableData = result.map((row, index) => {
+        const pdfRow: Record<string, any> = {};
 
-        pdfColumns.forEach((col) => {
-          if (col.value === "sno") {
-            newRow.sno = index + 1;
-          } else if (col.value in (row.dynamicCastes || {})) {
-            // caste column
-            newRow[col.value] = row.dynamicCastes?.[col.value] ?? "-";
+        pdfColumns.forEach((column) => {
+          if (column.value === "sno") {
+            pdfRow.sno = index + 1;
+          } else if (column.value in studentInfo) {
+            pdfRow[column.value] =
+              studentInfo[column.value as keyof typeof studentInfo];
+          } else if (row.dynamicCastes?.hasOwnProperty(column.value)) {
+            pdfRow[column.value] = row.dynamicCastes[column.value];
           } else {
-            // normal field
-            newRow[col.value] = (row as any)[col.value];
+            pdfRow[column.value] = (row as any)[column.value] ?? "-";
           }
         });
 
-        return newRow;
+        return pdfRow;
       });
 
-      const firstTableColumn = [
-        `Name: ${stdName} `,
-        `Rank: ${stdRank} `,
-        `Caste: ${stdCaste} `,
-      ];
+      const firstTableColumn = studentFields
+        .filter((field) => selectedStudentDetails.includes(field.key))
+        .map(
+          (field) =>
+            `${field.label}: ${
+              studentInfo[field.key as keyof typeof studentInfo]
+            }`,
+        );
 
       const tableColumn = pdfColumns.map((col) => ({
         header: col.label,
@@ -268,7 +335,9 @@ const Cutoff2025 = () => {
         },
       });
 
-      doc.save(`${stdName}-${stdRank}-${stdCaste}.pdf`);
+      doc.save(
+        `${studentInfo.student_name}-${studentInfo.student_rank}-${studentInfo.student_caste}.pdf`,
+      );
       toast.success(`pdf downloaded successfully`);
     }
   };
@@ -299,12 +368,6 @@ const Cutoff2025 = () => {
       fetchCutoffs({ variables });
     }
   };
-
-  useEffect(() => {
-    if (data?.apCutoff2025sByRank) {
-      setResult(data.apCutoff2025sByRank);
-    }
-  }, [data]);
 
   const handleDelete = (sno: number) => {
     setResult((prevItems) => prevItems.filter((item) => item.sno !== sno));
@@ -432,64 +495,50 @@ const Cutoff2025 = () => {
         </form>
       </article>
       <article className="w-full h-full mt-20">
-        <div className="mt-8 flex gap-4 flex-wrap items-start">
-          <span>
-            <label className="block text-gray-700 font-medium mb-1">
-              Student Name
-            </label>
-            <input
-              type="text"
-              className="px-1 sm:px-3 py-1 sm:py-2 border border-indigo-100 bg-indigo-50 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              placeholder="student name"
-              value={stdName}
-              onChange={(e) => setStdName(e.target.value)}
-              required
-              min={0}
-            />
-          </span>
-          <span>
-            <label className="block text-gray-700 font-medium mb-1">
-              Student Rank
-            </label>
-            <input
-              type="number"
-              className="px-1 sm:px-3 py-1 sm:py-2 border border-indigo-100 bg-indigo-50 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              placeholder="rank"
-              value={stdRank}
-              onChange={(e) => setStdRank(e.target.value)}
-              required
-            />
-          </span>
-          <span>
-            <label className="block text-gray-700 font-medium mb-1">
-              Student Caste
-            </label>
-            <input
-              type="text"
-              className="px-1 sm:px-3 py-1 sm:py-2 border border-indigo-100 bg-indigo-50 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              placeholder="caste"
-              value={stdCaste}
-              onChange={(e) => setStdCaste(e.target.value)}
-              required
-              min={0}
-            />
-          </span>
-          <span>
-            <button
-              type="submit"
-              className="justify-self-end basis-1/12 sm:ml-4 mt-2 sm:mt-6 bg-emerald-700 px-4 py-2 font-semibold text-white rounded hover:bg-emerald-700/80 transition"
-              onClick={() => handlePDF()}
-            >
-              print
-            </button>
-          </span>
+        <div className="mt-8 flex flex-wrap gap-6 items-end">
+          {studentFields.map((field) => (
+            <div key={field.key} className="flex flex-col">
+              <label className="block text-gray-700 font-medium mb-1">
+                {field.label}
+              </label>
+
+              <div className="flex items-center gap-2">
+                <input
+                  type={field.type}
+                  placeholder={field.placeholder}
+                  className="px-3 py-2 border border-indigo-100 bg-indigo-50 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  value={studentInfo[field.key as keyof typeof studentInfo]}
+                  onChange={(e) =>
+                    handleStudentChange(
+                      field.key as keyof typeof studentInfo,
+                      e.target.value,
+                    )
+                  }
+                />
+
+                <input
+                  type="checkbox"
+                  checked={selectedStudentDetails.includes(field.key)}
+                  onChange={() => toggleStudentDetail(field.key)}
+                />
+              </div>
+            </div>
+          ))}
+
+          <button
+            type="button"
+            onClick={handlePDF}
+            className="bg-emerald-700 text-white px-4 py-2 rounded"
+          >
+            Print
+          </button>
         </div>
         <div className="mt-4 bg-indigo-100 border-1 border-indigo-200 p-4 rounded-lg">
           <p className="font-semibold mb-2">Select Columns for PDF</p>
 
           <div className="flex flex-wrap gap-3">
-            {pdfSelectableColumns.map((col) => (
-              <label key={col.value} className="flex items-center gap-2">
+            {pdfSelectableColumns.map((col, index) => (
+              <label key={index + 1} className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   checked={selectedColumns.includes(col.value)}
@@ -627,7 +676,13 @@ const Cutoff2025 = () => {
                       District Code
                     </th>
                     <th className="border border-gray-300 pl-2 py-2 w-xs  text-left py-2 break-all">
-                      Place
+                      Local Area
+                    </th>
+                    <th className="border border-gray-300 pl-2 py-2 w-xs  text-left py-2 break-all">
+                      Inst Reg
+                    </th>
+                    <th className="border border-gray-300 pl-2 py-2 w-xs  text-left py-2 break-all">
+                      College Type
                     </th>
                     <th className="border border-gray-300 pl-2 py-2 w-xs  text-left py-2 break-all">
                       Priority
@@ -643,87 +698,103 @@ const Cutoff2025 = () => {
                   </tr>
                 </thead>
                 <tbody className="text-neutral-900">
-                  {result.map((row: CutoffRow, index: number) => (
-                    <tr
-                      key={row.sno}
-                      className={`hover:bg-stone-50 hover:text-blue-500 h-4 ${
-                        index % 2 != 0 ? "bg-gray-100" : ""
-                      }`}
-                    >
-                      <td className="border border-gray-300 py-2 text-center max-w-min">
-                        <div className="flex flex-col items-center justify-center gap-1 p-1">
-                          <button
-                            type="button"
-                            disabled={index === 0}
-                            onClick={() => handleMoveRow(index, "up")}
-                            className="px-1 rounded bg-blue-500 text-white disabled:bg-gray-300"
-                          >
-                            ↑
-                          </button>
+                  {result.map((row: CutoffRow, index: number) => {
+                    const key = `${row.inst_code}-${row.branch_code}`;
+                    const isDuplicate = (duplicateKeys.get(key) || 0) > 1;
 
-                          <button
-                            type="button"
-                            disabled={index === result.length - 1}
-                            onClick={() => handleMoveRow(index, "down")}
-                            className="px-1 rounded bg-blue-500 text-white disabled:bg-gray-300"
-                          >
-                            ↓
-                          </button>
-                        </div>
-                      </td>
-                      <td className="border border-gray-300 py-2 text-center max-w-min">
-                        <button
-                          className="flex justify-center items-center gap-1 w-full h-full"
-                          onClick={() => handleDelete(row.sno)}
-                        >
-                          {index + 1}
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="size-1 sm:size-3"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                            />
-                          </svg>
-                        </button>
-                      </td>
-                      <td className="border border-gray-300 py-2 text-center max-w-min">
-                        {row.inst_code}
-                      </td>
-                      <td className="border border-gray-300 pl-2 py-2">
-                        {row.inst_name}
-                      </td>
-                      <td className="border border-gray-300 py-2 text-center max-w-min">
-                        {row.branch_code}
-                      </td>
-                      <td className="border border-gray-300 pl-2 py-2">
-                        {row.branch_name}
-                      </td>
-                      <td className="border border-gray-300 py-2 text-center max-w-min">
-                        {row.dist_code}
-                      </td>
-                      <td className="border border-gray-300 pl-2 py-2 break-all">
-                        {row.local_area}
-                      </td>
-                      <td className="border border-gray-300 pl-2 py-2 break-all">
-                        {row.priority}
-                      </td>
-                      {selectedCastes.map((col) => (
-                        <td
-                          key={col}
-                          className="border border-gray-300 py-2 text-center max-w-min"
-                        >
-                          {row.dynamicCastes?.[col] ?? "-"}
+                    return (
+                      <tr
+                        key={row.sno}
+                        className={`hover:bg-stone-50 hover:text-blue-500 h-4  ${
+                          isDuplicate
+                            ? "bg-rose-600 text-white"
+                            : index % 2 !== 0
+                              ? "bg-gray-100"
+                              : ""
+                        }
+      `}
+                      >
+                        <td className="border border-gray-300 py-2 text-center max-w-min">
+                          <div className="flex flex-col items-center justify-center gap-1 p-1">
+                            <button
+                              type="button"
+                              disabled={index === 0}
+                              onClick={() => handleMoveRow(index, "up")}
+                              className="px-1 rounded bg-blue-500 text-white disabled:bg-gray-300"
+                            >
+                              ↑
+                            </button>
+
+                            <button
+                              type="button"
+                              disabled={index === result.length - 1}
+                              onClick={() => handleMoveRow(index, "down")}
+                              className="px-1 rounded bg-blue-500 text-white disabled:bg-gray-300"
+                            >
+                              ↓
+                            </button>
+                          </div>
                         </td>
-                      ))}
-                    </tr>
-                  ))}
+                        <td className="border border-gray-300 py-2 text-center max-w-min">
+                          <button
+                            className="flex justify-center items-center gap-1 w-full h-full"
+                            onClick={() => handleDelete(row.sno)}
+                          >
+                            {index + 1}
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="size-1 sm:size-3"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                              />
+                            </svg>
+                          </button>
+                        </td>
+                        <td className="border border-gray-300 py-2 text-center max-w-min">
+                          {row.inst_code}
+                        </td>
+                        <td className="border border-gray-300 pl-2 py-2">
+                          {row.inst_name}
+                        </td>
+                        <td className="border border-gray-300 py-2 text-center max-w-min">
+                          {row.branch_code}
+                        </td>
+                        <td className="border border-gray-300 pl-2 py-2">
+                          {row.branch_name}
+                        </td>
+                        <td className="border border-gray-300 py-2 text-center max-w-min">
+                          {row.dist_code}
+                        </td>
+                        <td className="border border-gray-300 pl-2 py-2 break-all">
+                          {row.local_area}
+                        </td>
+                        <td className="border border-gray-300 pl-2 py-2 break-all">
+                          {row.inst_reg}
+                        </td>
+                        <td className="border border-gray-300 pl-2 py-2 break-all">
+                          {row.college_type}
+                        </td>
+                        <td className="border border-gray-300 pl-2 py-2 break-all">
+                          {row.priority}
+                        </td>
+                        {selectedCastes.map((col) => (
+                          <td
+                            key={col}
+                            className="border border-gray-300 py-2 text-center max-w-min"
+                          >
+                            {row.dynamicCastes?.[col] ?? "-"}
+                          </td>
+                        ))}
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

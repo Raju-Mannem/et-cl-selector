@@ -952,7 +952,7 @@ const Cutoff2024 = () => {
                           row.co_education == "GIRLS" && "text-red-400"
                         }
                         ${row.college_type == "PU" && "bg-rose-600 text-white"}
-                        ${row.inst_code == "JNTKSS" && "bg-emerald-600"} 
+                        ${row.inst_code == "JNTKSS" && "bg-emerald-600"}
                         hover:text-blue-500 h-4 ${
                           index % 2 != 0 ? "bg-gray-100" : ""
                         }`}

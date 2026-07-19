@@ -182,9 +182,8 @@ priority: Int
     inst_name: String
     branch_name: String
     branch_code: String
-    co_education: String
     dynamicCastes: JSON
-    type: String
+    college_type: String
     dist_code: String
     local_area: String
     inst_reg: String

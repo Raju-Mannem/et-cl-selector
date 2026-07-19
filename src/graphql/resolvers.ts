@@ -280,7 +280,7 @@ const resolvers = {
         const whereClause: any = {
           branch_code: { in: branchCodes },
           dist_code: { in: distCodes },
-          inst_name: { in: instituteNames },
+          // inst_name: { in: instituteNames },
           ...(collegeType && { type: { in: collegeType } }),
         };
 
