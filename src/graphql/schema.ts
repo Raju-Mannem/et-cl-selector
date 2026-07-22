@@ -138,6 +138,7 @@ priority: Int
     distCodes: [String!]
     coEdu: Boolean
     collegeType: [String!]
+    orderBy: String
   }
 
   input InstDistFilterInput{

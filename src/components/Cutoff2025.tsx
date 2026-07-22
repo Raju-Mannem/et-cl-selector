@@ -66,6 +66,7 @@ const Cutoff2025 = () => {
   const [selectedBranches, setSelectedBranches] = useState<string[]>([]);
   const [selectedDistricts, setSelectedDistricts] = useState<string[]>([]);
   const [selectedInstitutes, setSelectedInstitutes] = useState<string[]>([]);
+  const [selectedOrder, setSelectedOrder] = useState<string>("priority");
   const [collegeType, setCollegeType] = useState<string[]>([]);
   // const [instCodes, setInstCodes] = useState<string[]>([]);
   const [studentInfo, setStudentInfo] = useState({
@@ -155,6 +156,26 @@ const Cutoff2025 = () => {
 
     return counts;
   }, [result]);
+
+  useEffect(() => {
+    if (
+      selectedOrder !== "priority" &&
+      !selectedCastes.includes(selectedOrder)
+    ) {
+      setSelectedOrder("priority");
+    }
+  }, [selectedCastes, selectedOrder]);
+
+  const orderOptions = useMemo(
+    () => [
+      { label: "Priority", value: "priority" },
+      ...selectedCastes.map((caste) => ({
+        label: caste,
+        value: caste,
+      })),
+    ],
+    [selectedCastes],
+  );
 
   const toggleStudentDetail = (key: string) => {
     setSelectedStudentDetails((prev) =>
@@ -361,6 +382,7 @@ const Cutoff2025 = () => {
           branchCodes: selectedBranches,
           distCodes: selectedDistricts,
           collegeType: collegeType,
+          orderBy: selectedOrder,
         },
       };
 
@@ -486,6 +508,23 @@ const Cutoff2025 = () => {
             selectedValues={selectedDistricts}
             setSelectedValues={setSelectedDistricts}
           />
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Order By
+            </label>
+
+            <select
+              value={selectedOrder}
+              onChange={(e) => setSelectedOrder(e.target.value)}
+              className="px-3 py-2 border border-indigo-100 bg-indigo-50 rounded"
+            >
+              {orderOptions.map((item) => (
+                <option key={item.value} value={item.value}>
+                  {item.label}
+                </option>
+              ))}
+            </select>
+          </div>
           <button
             type="submit"
             className="justify-self-end basis-1/12 sm:ml-4 mt-2 sm:mt-6 bg-indigo-600 text-white font-semibold py-2 px-4 rounded hover:bg-indigo-700 transition"

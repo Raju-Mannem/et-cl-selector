@@ -3,7 +3,7 @@ import { GraphQLScalarType, Kind } from "graphql";
 import { Decimal } from "@prisma/client/runtime/library";
 
 function toNumber(
-  val: Decimal | number | string | null | undefined
+  val: Decimal | number | string | null | undefined,
 ): number | null {
   if (val === null || val === undefined) return null;
   if (typeof val === "number") {
@@ -73,7 +73,7 @@ const resolvers = {
     getCoursesByInstitute: async (
       _parent: any,
       args: any,
-      context: Context
+      context: Context,
     ) => {
       return await context.prisma.course.findMany({
         where: { institute_code: args.institute_code },
@@ -82,7 +82,7 @@ const resolvers = {
     apCutoff2023s: async (
       _parent: any,
       args: { limit?: number; offset?: number },
-      context: Context
+      context: Context,
     ) => {
       const limit = args.limit ?? 50;
       const offset = args.offset ?? 0;
@@ -101,7 +101,7 @@ const resolvers = {
     apCutoff2023: async (
       _parent: any,
       args: { sno: number },
-      context: Context
+      context: Context,
     ) => {
       return await context.prisma.ap_cutoff_2023.findUnique({
         where: { sno: args.sno },
@@ -110,7 +110,7 @@ const resolvers = {
     apCutoff2023sByInstCodes: async (
       _parent: any,
       args: { inst_codes: string[] },
-      context: Context
+      context: Context,
     ) => {
       return await context.prisma.ap_cutoff_2023.findMany({
         where: {
@@ -121,16 +121,16 @@ const resolvers = {
     apCutoff2023sByRank: async (
       __parent: any,
       args: { filter: any },
-      context: Context
+      context: Context,
     ) => {
       const { minRank, maxRank, branchCodes, casteColumns, distCodes, coEdu } =
         args.filter;
 
-        const whereClause: any = {
-          branch_code: { in: branchCodes },
-          dist_code: { in: distCodes },
-          ...(coEdu && { co_education: "GIRLS" }),
-        };
+      const whereClause: any = {
+        branch_code: { in: branchCodes },
+        dist_code: { in: distCodes },
+        ...(coEdu && { co_education: "GIRLS" }),
+      };
 
       // 1. Fetch all rows for selected districts
       const rows = await context.prisma.ap_cutoff_2023.findMany({
@@ -154,13 +154,13 @@ const resolvers = {
           if (rawValue === null || rawValue === undefined) return false;
           const value = toNumber(rawValue);
           return value! >= minRank && value! <= maxRank;
-        })
+        }),
       );
       // console.log('Filtered rows:', filteredRows.length);
 
       // ✅ 3. Create a branch code order map for fast lookup
       const branchOrderMap = new Map<string, number>(
-        branchCodes.map((code: string, index: number) => [code, index])
+        branchCodes.map((code: string, index: number) => [code, index]),
       );
 
       const sortedRows = filteredRows.sort((a, b) => {
@@ -187,7 +187,7 @@ const resolvers = {
         branch_name: row.branch_name,
         co_education: row.co_education,
         dynamicCastes: Object.fromEntries(
-          casteColumns.map((col: any) => [col, row[col as keyof typeof row]])
+          casteColumns.map((col: any) => [col, row[col as keyof typeof row]]),
         ),
         college_type: row.college_type,
         a_reg: row.a_reg,
@@ -196,17 +196,24 @@ const resolvers = {
     apCutoff2024sByRank: async (
       __parent: any,
       args: { filter: any },
-      context: Context
+      context: Context,
     ) => {
-      const { minRank, maxRank, branchCodes, casteColumns, distCodes, coEdu, collegeType } =
-        args.filter;
+      const {
+        minRank,
+        maxRank,
+        branchCodes,
+        casteColumns,
+        distCodes,
+        coEdu,
+        collegeType,
+      } = args.filter;
 
-        const whereClause: any = {
-          branch_code: { in: branchCodes },
-          dist_code: { in: distCodes },
-          ...(coEdu && { co_education: "GIRLS" }),
-          ...(collegeType && { college_type: { in: collegeType } }),
-        };
+      const whereClause: any = {
+        branch_code: { in: branchCodes },
+        dist_code: { in: distCodes },
+        ...(coEdu && { co_education: "GIRLS" }),
+        ...(collegeType && { college_type: { in: collegeType } }),
+      };
 
       // 1. Fetch all rows for selected districts
       const rows = await context.prisma.ap_cutoff_2024.findMany({
@@ -230,13 +237,13 @@ const resolvers = {
           if (rawValue === null || rawValue === undefined) return false;
           const value = toNumber(rawValue);
           return value! >= minRank && value! <= maxRank;
-        })
+        }),
       );
       // console.log('Filtered rows:', filteredRows.length);
 
       // ✅ 3. Create a branch code order map for fast lookup
       const branchOrderMap = new Map<string, number>(
-        branchCodes.map((code: string, index: number) => [code, index])
+        branchCodes.map((code: string, index: number) => [code, index]),
       );
 
       const sortedRows = filteredRows.sort((a, b) => {
@@ -263,7 +270,7 @@ const resolvers = {
         branch_name: row.branch_name,
         co_education: row.co_education,
         dynamicCastes: Object.fromEntries(
-          casteColumns.map((col: any) => [col, row[col as keyof typeof row]])
+          casteColumns.map((col: any) => [col, row[col as keyof typeof row]]),
         ),
         college_type: row.college_type,
         a_reg: row.a_reg,
@@ -272,23 +279,31 @@ const resolvers = {
     apCutoff2025sByRank: async (
       __parent: any,
       args: { filter: any },
-      context: Context
+      context: Context,
     ) => {
-      const { minRank, maxRank, instituteNames, branchCodes, casteColumns, distCodes, collegeType } =
-        args.filter;
+      const {
+        minRank,
+        maxRank,
+        instituteNames,
+        branchCodes,
+        casteColumns,
+        distCodes,
+        collegeType,
+        orderBy,
+      } = args.filter;
 
-        const whereClause: any = {
-          branch_code: { in: branchCodes },
-          dist_code: { in: distCodes },
-          // inst_name: { in: instituteNames },
-          ...(collegeType && { type: { in: collegeType } }),
-        };
+      const whereClause: any = {
+        branch_code: { in: branchCodes },
+        dist_code: { in: distCodes },
+        inst_name: { in: instituteNames },
+        ...(collegeType && { type: { in: collegeType } }),
+      };
 
       // 1. Fetch all rows for selected districts
       const rows = await context.prisma.ap_cutoff_2025.findMany({
         where: whereClause,
         orderBy: {
-          priority: "asc",
+          [orderBy || "priority"]: "asc",
         },
       });
 
@@ -306,25 +321,36 @@ const resolvers = {
           if (rawValue === null || rawValue === undefined) return false;
           const value = toNumber(rawValue);
           return value! >= minRank && value! <= maxRank;
-        })
+        }),
       );
       // console.log('Filtered rows:', filteredRows.length);
 
       // ✅ 3. Create a branch code order map for fast lookup
       const branchOrderMap = new Map<string, number>(
-        branchCodes.map((code: string, index: number) => [code, index])
+        branchCodes.map((code: string, index: number) => [code, index]),
       );
 
+      const sortColumn = orderBy || "priority";
+
       const sortedRows = filteredRows.sort((a, b) => {
-        // priority is Int? (number | null)
-        const priorityA = a.priority ?? 0;
-        const priorityB = b.priority ?? 0;
-        const priorityDiff = priorityA - priorityB;
-        if (priorityDiff !== 0) return priorityDiff;
+        const valueA = Number(
+          a[sortColumn as keyof typeof a] ?? Number.MAX_SAFE_INTEGER,
+        );
+
+        const valueB = Number(
+          b[sortColumn as keyof typeof b] ?? Number.MAX_SAFE_INTEGER,
+        );
+
+        if (valueA !== valueB) {
+          return valueA - valueB;
+        }
+
         const branchAOrder =
           branchOrderMap.get(a.branch_code ?? "") ?? Number.MAX_SAFE_INTEGER;
+
         const branchBOrder =
           branchOrderMap.get(b.branch_code ?? "") ?? Number.MAX_SAFE_INTEGER;
+
         return branchAOrder - branchBOrder;
       });
       // 4. Map to result
@@ -336,18 +362,18 @@ const resolvers = {
         branch_code: row.branch_code,
         branch_name: row.branch_name,
         dynamicCastes: Object.fromEntries(
-          casteColumns.map((col: any) => [col, row[col as keyof typeof row]])
+          casteColumns.map((col: any) => [col, row[col as keyof typeof row]]),
         ),
         college_type: row.type,
         local_area: row.local_area,
         inst_reg: row.inst_reg,
-        priority: row.priority
+        priority: row.priority,
       }));
     },
     apCutoff2023sByInstDist: async (
       __parent: any,
       args: { filter: any },
-      context: Context
+      context: Context,
     ) => {
       const { instCodes, branchCodes, casteColumns, distCodes } = args.filter;
 
@@ -370,7 +396,10 @@ const resolvers = {
         branch_name: row.branch_name,
         co_education: row.co_education,
         dynamicCastes: Object.fromEntries(
-          casteColumns.map((col: String) => [col, row[col as keyof typeof row]])
+          casteColumns.map((col: String) => [
+            col,
+            row[col as keyof typeof row],
+          ]),
         ),
       }));
     },
@@ -394,7 +423,7 @@ const resolvers = {
     updateApCutoff2023: async (
       _parent: any,
       args: { sno: number; data: any },
-      context: Context
+      context: Context,
     ) => {
       return await context.prisma.ap_cutoff_2023.update({
         where: { sno: args.sno },
@@ -404,7 +433,7 @@ const resolvers = {
     deleteApCutoff2023: async (
       _parent: any,
       args: { sno: number },
-      context: Context
+      context: Context,
     ) => {
       return context.prisma.ap_cutoff_2023.delete({
         where: { sno: args.sno },
